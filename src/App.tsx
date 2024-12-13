@@ -17,7 +17,10 @@ import {
 function App() {
   const [activeSection, setActiveSection] = useState('personal');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departamento' | 'work' | 'company';
+
+  // Actualiza el estado inicial
+  const [formData, setFormData] = useState<Record<FormDataKey, any>>({
     personal: {} as PersonalInfo,
     vehicle: {} as Vehiculo,
     fine: {} as Comparendo,
@@ -34,7 +37,7 @@ function App() {
     setFormData(prev => ({
       ...prev,
       [activeSection]: {
-        ...prev[activeSection],
+        ...prev[activeSection as FormDataKey],
         [name]: value,
       },
     }));
@@ -47,18 +50,20 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const validationErrors = validateForm(formData[activeSection]);
+    const validationErrors = validateForm(
+      formData[activeSection as FormDataKey], 
+      activeSection
+    );
     
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false);
       return;
     }
-
+  
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form data ready for submission:', formData[activeSection]);
+      console.log('Form data ready for submission:', formData[activeSection as FormDataKey]);
       // Here you would make the actual API call to your backend
     } catch (error) {
       console.error('Error submitting form:', error);

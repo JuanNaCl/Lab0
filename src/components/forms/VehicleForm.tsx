@@ -64,7 +64,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                     value={data.valor_nuevo}
                     onChange={onChange}
                     error={errors.valor_nuevo}
-                    required
+                    
                 />
                 <FormInput
                     label="Placa"
