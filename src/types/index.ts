@@ -45,12 +45,13 @@ export interface Vivienda extends BaseEntity {
     habitaciones: number;
     baños: number;
     estrato: number;
+    tipo: string;
 }
 
 export interface Municipio extends BaseEntity {
-    id_departamento: number;
     id_alcalde: number;
     nombre_municipio: string;
+    id_departamento: number;
     codigo_municipio: number;
     area_total: number;
     habitantes_censo_2023: number;
@@ -68,6 +69,6 @@ export interface Trabajo extends BaseEntity {
 }
 
 export interface Empresa extends BaseEntity {
-    id_departamento_constitucion: number;
     nombre: string;
+    id_departamento_constitucion: number;
 }
