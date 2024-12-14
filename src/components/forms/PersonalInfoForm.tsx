@@ -5,9 +5,10 @@ import { PersonalInfo } from '../../types';
 interface PersonalInfoFormProps {
     data: PersonalInfo;
     errors: Record<string, string>;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     activeSection: string;
 }
+
 
 export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     data,

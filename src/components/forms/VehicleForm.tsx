@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormInput } from '../common/FormInput';
-import { Vehiculo } from '../../types';
+import {Vehiculo } from '../../types';
+import { FormSelect } from '../common/FormSelect';
+import supabase from '../common/supabaseClient';
 
 interface VehicleFormProps {
     data: Vehiculo;
     errors: Record<string, string>;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     activeSection: string;
 }
 
@@ -15,14 +17,44 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
     onChange,
     activeSection,
 }) => {
+
+    const [personaOptions, setPersonaOptions] = useState<{ value: number, label: string }[]>([]);
+    useEffect(() => { fetchPersonas(); }, []);
+
+    const fetchPersonas = async () => {
+        let { data: Persona, error } = await supabase
+        .from('Persona')
+        .select('*');
+        if (error) {
+            console.error("Error fetching Personas:", error);
+        } else if (Persona?.length === 0) {
+            console.error("No Personas found");
+        } else {
+            const formattedOptions = Persona!.map(persona => ({
+                value: persona.id!, label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+            })); setPersonaOptions(formattedOptions);
+        }
+    };
+
     if (activeSection !== 'vehicles') return null;
+
 
     return (
         <div className="space-y-4">
             <h2 className="text-2xl font-semibold mb-6">Información del Vehículo</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormSelect
+                    label="Nombre a quien pertenece"
+                    // type="text"
+                    name="id_dueño"
+                    value={data.tipo}
+                    options={personaOptions}
+                    onChange={onChange}
+                    error={errors.tipo}
+                    required
+                />
                 <FormInput
-                    label="Nombre"
+                    label="Nombre carro"
                     type="text"
                     name="nombre"
                     value={data.nombre}
@@ -39,11 +71,12 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                     error={errors.marca}
                     required
                 />
-                <FormInput
+                <FormSelect
                     label="Tipo"
-                    type="text"
+                    // type="text"
                     name="tipo"
                     value={data.tipo}
+                    options={[{ value: 1, label: 'Carro' }, { value: 2, label: 'Camion' }, { value: 3, label: 'Moto' }]}
                     onChange={onChange}
                     error={errors.tipo}
                     required
@@ -64,7 +97,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                     value={data.valor_nuevo}
                     onChange={onChange}
                     error={errors.valor_nuevo}
-                    required
+
                 />
                 <FormInput
                     label="Placa"
