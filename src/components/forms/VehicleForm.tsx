@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FormInput } from '../common/FormInput';
-import {Vehiculo } from '../../types';
+import { Vehiculo } from '../../types';
 import { FormSelect } from '../common/FormSelect';
 import supabase from '../common/supabaseClient';
 
@@ -23,16 +23,18 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
 
     const fetchPersonas = async () => {
         let { data: Persona, error } = await supabase
-        .from('Persona')
-        .select('*');
+            .from('Persona')
+            .select('*');
         if (error) {
             console.error("Error fetching Personas:", error);
         } else if (Persona?.length === 0) {
             console.error("No Personas found");
         } else {
+            console.log("Personas fetched successfully:", Persona);
             const formattedOptions = Persona!.map(persona => ({
                 value: persona.id!, label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
             })); setPersonaOptions(formattedOptions);
+            console.log("Formatted Personas:", formattedOptions);
         }
     };
 
@@ -41,7 +43,18 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
 
     return (
         <div className="space-y-4">
-            <h2 className="text-2xl font-semibold mb-6">Información del Vehículo</h2>
+
+
+            <div className="flex items-center mb-6 justify-between">
+                <h2 className="text-2xl font-semibold text-emerald-800">Información del Vehículo</h2>
+                <button
+                    type="button"
+                    className="px-4 py-2 text-emerald-800 rounded" 
+                    onClick={fetchPersonas}>
+                    Actualizar 
+                </button>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormSelect
                     label="Nombre a quien pertenece"
@@ -97,7 +110,6 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                     value={data.valor_nuevo}
                     onChange={onChange}
                     error={errors.valor_nuevo}
-
                 />
                 <FormInput
                     label="Placa"
