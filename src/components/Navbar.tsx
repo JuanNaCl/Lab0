@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  UserCircle2, Car, FileWarning, Home, Building2, 
+  UserCircle2, Car, FileWarning, Home, 
   MapPin, Briefcase, Building 
 } from 'lucide-react';
 

@@ -9,18 +9,22 @@ import { WorkForm } from './components/forms/WorkForm';
 import { CompanyForm } from './components/forms/CompanyForm';
 import { Save } from 'lucide-react';
 import { validateForm } from './utils/validation';
-import { 
-  PersonalInfo, Vehiculo, Comparendo, Vivienda, 
-  Municipio, Departamento, Trabajo, Empresa 
+import {
+  PersonalInfo, Vehiculo, Comparendo, Vivienda,
+  Municipio, Departamento, Trabajo, Empresa
 } from './types';
+import supabase from './components/common/supabaseClient';
+import { Popup } from './components/common/popUp';
 
 function App() {
   const [activeSection, setActiveSection] = useState('personal');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
   type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departamento' | 'work' | 'company';
 
-  // Actualiza el estado inicial
-  const [formData, setFormData] = useState<Record<FormDataKey, any>>({
+  const initialFormData = {
     personal: {} as PersonalInfo,
     vehicle: {} as Vehiculo,
     fine: {} as Comparendo,
@@ -29,7 +33,9 @@ function App() {
     departamento: {} as Departamento,
     work: {} as Trabajo,
     company: {} as Empresa,
-  });
+  };
+
+  const [formData, setFormData] = useState<Record<FormDataKey, any>>(initialFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -49,12 +55,12 @@ function App() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+  
     const validationErrors = validateForm(
-      formData[activeSection as FormDataKey], 
+      formData[activeSection as FormDataKey],
       activeSection
     );
-    
+  
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false);
@@ -64,9 +70,70 @@ function App() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('Form data ready for submission:', formData[activeSection as FormDataKey]);
-      // Here you would make the actual API call to your backend
+      console.log('Active section:', activeSection);
+      
+      let submissionResult = null;
+      switch (activeSection) {
+        case 'personal':
+          console.log('Submitting personal info:');
+          break
+        case 'vehicles':
+          const vehicleData = formData[activeSection as FormDataKey];
+          const { data, error } = await supabase
+            .from('Vehiculo')
+            .insert([{
+              id_dueño: parseInt(vehicleData.id_dueño),
+              nombre: vehicleData.nombre,
+              marca: vehicleData.marca,
+              tipo: vehicleData.tipo,
+              color: vehicleData.color,
+              valor_nuevo: vehicleData.valor_nuevo !== null ? parseInt(vehicleData.valor_nuevo) : null,
+              placa: vehicleData.placa,
+            }])
+            .select();
+          
+          if (error) {
+            console.error('Error inserting vehicle data:', error);
+            setPopupMessage('Error al guardar datos del vehículo');
+          } else {
+            console.log('Vehicle data inserted successfully:', data);
+            setPopupMessage('Datos del vehículo guardados exitosamente');
+            submissionResult = data;
+          }
+          break;
+        case 'fines':
+          console.log('Submitting fines info:');
+          break;
+        case 'housing':
+          console.log('Submitting housing info:');
+          break;
+        case 'location':
+          console.log('Submitting location info:');
+          break;
+        case 'work':
+          console.log('Submitting work info:');
+          break;
+        case 'company':
+          console.log('Submitting company info:');
+          break;
+          
+        // Add similar cases for other form sections
+        default:
+          break;
+      }
+  
+      if (submissionResult) {
+        setShowPopup(true);
+        // Reset form data for the current section
+        setFormData(prev => ({
+          ...prev,
+          [activeSection]: initialFormData[activeSection as FormDataKey]
+        }));
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setPopupMessage('Ocurrió un error al guardar');
+      setShowPopup(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -75,7 +142,7 @@ function App() {
   return (
     <div className="min-h-screen bg-emerald-50">
       <Navbar activeSection={activeSection} onSectionChange={setActiveSection} />
-      
+
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -127,9 +194,7 @@ function App() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${
-                  isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'
-                }`}
+                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
               >
                 <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
@@ -138,6 +203,12 @@ function App() {
           </form>
         </div>
       </main>
+
+      <Popup
+        message={popupMessage}
+        show={showPopup}
+        onClose={() => setShowPopup(false)}
+      />
     </div>
   );
 }
