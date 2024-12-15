@@ -23,16 +23,15 @@ export const FormSelect: React.FC<FormSelectProps> = ({
     const customStyles = {
         control: (provided: any) => ({
             ...provided,
-            borderColor: error ? 'red' : 'emerald',
-            '&:hover': { borderColor: 'pink' }
+            borderColor: error ? 'red' : '#50C878', // Color emerald en hex
+            '&:hover': { borderColor: '#50C878' } // Color emerald en hex
         }),
         option: (provided: any, state: any) => ({
             ...provided,
-            backgroundColor: state.isSelected ? 'pink' : provided.backgroundColor,
-            '&:hover': { backgroundColor: 'pink' }
+            backgroundColor: state.isSelected ? '#50C878' : provided.backgroundColor, // Color emerald en hex
+            '&:hover': { backgroundColor: '#50C878' } // Color emerald en hex
         })
     };
-
     return (
         <div className="mb-4">
             <label className="block text-sm font-medium text-emerald-700 mb-1">

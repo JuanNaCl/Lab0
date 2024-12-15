@@ -1,6 +1,6 @@
 export const validateForm = (data: any, section: string) => {
     const errors: Record<string, string> = {};
-
+    console.log('Validating form:', section, data);
     switch (section) {
         case 'personal':
             const personalRequiredFields = {
@@ -155,15 +155,8 @@ export const validateForm = (data: any, section: string) => {
 
         case 'location':
             const municipioRequiredFields = {
-                nombre_municipio: 'Nombre del municipio es requerido',
-                codigo_municipio: 'Código del municipio es requerido',
                 area_total: 'Área total es requerida',
                 habitantes_censo_2023: 'Habitantes del censo es requerido',
-            };
-
-            const departamentoRequiredFields = {
-                nombre_departamento: 'Nombre del departamento es requerido',
-                codigo_departamento: 'Código del departamento es requerido',
             };
 
             // Validar campos de municipio
@@ -173,27 +166,32 @@ export const validateForm = (data: any, section: string) => {
                 }
             });
 
+            // Validaciones numéricas
+            const locationNumericFields = [
+                'area_total',
+                'habitantes_censo_2023',
+            ];
+
+            locationNumericFields.forEach(field => {
+                if (data[field] && (isNaN(data[field]) || data[field] <= 0)) {
+                    errors[field] = `El valor de ${field.replace(/_/g, ' ')} debe ser un número positivo`;
+                }
+            });
+            break;
+
+        case 'departamento':
+            const departamentoRequiredFields = {
+                nombre_departamento: 'Nombre del departamento es requerido',
+                codigo_departamento: 'Código del departamento es requerido',
+            };
+
             // Validar campos de departamento
             Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
                 if (!data[field]) {
                     errors[field] = message;
                 }
             });
-
-            // Validaciones numéricas
-            const locationNumericFields = [
-                'codigo_municipio', 'area_total',
-                'habitantes_censo_2023', 'codigo_departamento'
-            ];
-
-            locationNumericFields.forEach(field => {
-                if (data[field] && (isNaN(data[field]) || data[field] <= 0)) {
-                    errors[field] = `El valor de ${field.replace('_', ' ')} debe ser un número positivo`;
-                }
-            });
-
-            break;
-
+            break
         default:
             break;
     }
