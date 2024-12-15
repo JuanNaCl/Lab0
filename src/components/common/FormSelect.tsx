@@ -1,11 +1,12 @@
 import React from 'react';
+import Select from 'react-select';  // Importa la librería react-select
 
 interface FormSelectProps {
     label: string;
     name: string;
-    value: string;
+    value: any;
     options: Array<{ value: number, label: string }>;
-    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onChange: (selectedOption: any) => void;
     error?: string;
     required?: boolean;
 }
@@ -19,28 +20,38 @@ export const FormSelect: React.FC<FormSelectProps> = ({
     error,
     required = false,
 }) => {
+    const customStyles = {
+        control: (provided: any) => ({
+            ...provided,
+            borderColor: error ? 'red' : 'emerald',
+            '&:hover': { borderColor: 'pink' }
+        }),
+        option: (provided: any, state: any) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? 'pink' : provided.backgroundColor,
+            '&:hover': { backgroundColor: 'pink' }
+        })
+    };
+
     return (
         <div className="mb-4">
             <label className="block text-sm font-medium text-emerald-700 mb-1">
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}
             </label>
-            <select
+            <Select
                 name={name}
                 value={value}
-                onChange={onChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${error
-                        ? 'border-red-500 focus:ring-red-200'
-                        : 'border-emerald-300 focus:ring-emerald-200 focus:border-emerald-500'
-                    }`}
-            >
-                <option value="">Seleccione...</option>
-                {options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
+                onChange={
+                    (selectedOption: any) => onChange({
+                        target: { name, value: selectedOption }
+                    })
+                }
+                options={options}
+                styles={customStyles}
+                classNamePrefix={error ? 'border-red-500 focus:ring-red-200' : 'border-emerald-300 focus:ring-emerald-200 focus:border-emerald-500'}
+                isSearchable={true}  // Permite la búsqueda
+            />
             {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
         </div>
     );
