@@ -1,7 +1,8 @@
 import React from 'react';
 import { 
   UserCircle2, Car, FileWarning, Home, 
-  MapPin, Briefcase, Building 
+  MapPin, Briefcase, Building, 
+  ClipboardType
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -36,7 +37,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, onSectionChange }
     { id: 'vehicles', label: 'Vehículos', icon: <Car className="w-5 h-5" /> },
     { id: 'fines', label: 'Comparendos', icon: <FileWarning className="w-5 h-5" /> },
     { id: 'housing', label: 'Vivienda', icon: <Home className="w-5 h-5" /> },
-    { id: 'location', label: 'Ubicación', icon: <MapPin className="w-5 h-5" /> },
+    { id: 'location', label: 'Municipio', icon: <MapPin className="w-5 h-5" /> },
+    { id: 'departament', label: 'Departamento', icon: <ClipboardType className="w-5 h-5" /> },
     { id: 'work', label: 'Trabajo', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'company', label: 'Empresa', icon: <Building className="w-5 h-5" /> },
   ];
@@ -50,7 +52,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, onSectionChange }
             icon={section.icon}
             label={section.label}
             active={activeSection === section.id}
-            onClick={() => onSectionChange(section.id)}
+            onClick={() => {
+              console.log('Changing section to:', section.id);
+              onSectionChange(section.id)}}
           />
         ))}
       </div>

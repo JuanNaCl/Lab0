@@ -23,7 +23,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departamento' | 'work' | 'company';
+  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departament' | 'work' | 'company';
 
   const initialFormData = {
     personal: {} as PersonalInfo,
@@ -31,7 +31,10 @@ function App() {
     fine: {} as Comparendo,
     housing: {} as Vivienda,
     municipio: {} as Municipio,
-    departamento: {} as Departamento,
+    departament: {
+      id_gobernador: 0,
+      nombre_departamento: '',
+    } as Departamento,
     work: {} as Trabajo,
     company: {} as Empresa,
   };
@@ -55,8 +58,8 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
+    setIsSubmitting(true);
     const validationErrors = validateForm(
       formData[activeSection as FormDataKey],
       activeSection
@@ -70,9 +73,8 @@ function App() {
   
     try {
 
-      console.log('Form data ready for submission:', formData[activeSection as FormDataKey]);
-      console.log('Active section:', activeSection);
-      
+      console.log('Submitting form data:', formData[activeSection as FormDataKey]);
+
       let submissionResult = null;
       switch (activeSection) {
         case 'personal':
@@ -111,28 +113,50 @@ function App() {
           console.log('Submitting housing info:');
           break;
         case 'location':{ 
-          const locationData = formData[activeSection as FormDataKey];
+            const locationData = formData[activeSection as FormDataKey];
+            const { data, error } = await supabase
+            .from('Municipio')
+            .update({ 
+              id_alcalde: locationData.id_alcalde.value,
+              area_total:  parseInt(locationData.area_total),
+              habitantes_censo_2023:  parseInt(locationData.habitantes_censo_2023),
+            })
+            .eq('id', locationData.nombre_municipio.value)
+            .select()
+          
+            
+            if (error) {
+              console.error('Error inserting Municipio data:', error);
+              setPopupMessage('Error al guardar datos del Municipio');
+            } else {
+              console.log('Municipio data inserted successfully:', data);
+              setPopupMessage('Datos del Municipio guardados exitosamente');
+              submissionResult = data;
+            }
+          }
+          break;
+
+        case 'departament':{
+          const deaprtamentoData = formData[activeSection as FormDataKey];
           const { data, error } = await supabase
-          .from('Municipio')
+          .from('Departamento')
           .update({ 
-            id_alcalde: locationData.id_alcalde.value,
-            area_total:  parseInt(locationData.area_total),
-            habitantes_censo_2023:  parseInt(locationData.habitantes_censo_2023),
+            id_gobernador: deaprtamentoData.id_gobernador.value,
           })
-          .eq('id', locationData.nombre_municipio.value)
+          .eq('id', deaprtamentoData.nombre_departamento.value)
           .select()
         
           
           if (error) {
-            console.error('Error inserting Municipio data:', error);
-            setPopupMessage('Error al guardar datos del Municipio');
+            console.error('Error inserting departamento data:', error);
+            setPopupMessage('Error al guardar datos del departamento');
           } else {
-            console.log('Municipio data inserted successfully:', data);
-            setPopupMessage('Datos del Municipio guardados exitosamente');
+            console.log('departamento data inserted successfully:', data);
+            setPopupMessage('Datos del departamento guardados exitosamente');
             submissionResult = data;
           }
         }
-          break;
+        break;
         case 'work':
           console.log('Submitting work info:');
           break;
@@ -199,7 +223,7 @@ function App() {
               activeSection={activeSection}
             />
             <DepartamentForm
-              departamentoData={formData.departamento}
+              departamentoData={formData.departament}
               errors={errors}
               onChange={handleChange}
               activeSection={activeSection}

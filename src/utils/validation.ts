@@ -1,6 +1,5 @@
 export const validateForm = (data: any, section: string) => {
     const errors: Record<string, string> = {};
-    console.log('Validating form:', section, data);
     switch (section) {
         case 'personal':
             const personalRequiredFields = {
@@ -179,19 +178,19 @@ export const validateForm = (data: any, section: string) => {
             });
             break;
 
-        case 'departamento':
+        case 'departament':
             const departamentoRequiredFields = {
                 nombre_departamento: 'Nombre del departamento es requerido',
-                codigo_departamento: 'Código del departamento es requerido',
+                id_gobernador: 'Gobernador del departamento es requerido',
             };
-
             // Validar campos de departamento
             Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
-                if (!data[field]) {
+                if (!data.hasOwnProperty(field) || !data[field]) {
                     errors[field] = message;
                 }
             });
-            break
+            break;
+
         default:
             break;
     }

@@ -90,7 +90,10 @@ export const LocationForm: React.FC<LocationFormProps> = ({
                     <button
                         type="button"
                         className="px-4 py-2 text-emerald-800 rounded"
-                        onClick={fetchPersonas}>
+                        onClick={() => {
+                            fetchMunicipios();
+                            fetchPersonas();
+                        }}>
                         Actualizar
                     </button>
                 </div>
