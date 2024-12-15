@@ -19,8 +19,13 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
 }) => {
 
     const [personaOptions, setPersonaOptions] = useState<{ value: number, label: string }[]>([]);
-    useEffect(() => { fetchPersonas(); }, []);
+        useEffect(() => {
+            if (activeSection === 'vehicles') {
+                fetchPersonas();
+            }
+        }, [activeSection]);
 
+    
     const fetchPersonas = async () => {
         let { data: Persona, error } = await supabase
             .from('Persona')
@@ -30,11 +35,9 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
         } else if (Persona?.length === 0) {
             console.error("No Personas found");
         } else {
-            console.log("Personas fetched successfully:", Persona);
             const formattedOptions = Persona!.map(persona => ({
-                value: persona.id!, label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+                value: persona.id!, label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
             })); setPersonaOptions(formattedOptions);
-            console.log("Formatted Personas:", formattedOptions);
         }
     };
 
