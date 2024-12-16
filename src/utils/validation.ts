@@ -1,6 +1,5 @@
 export const validateForm = (data: any, section: string) => {
     const errors: Record<string, string> = {};
-
     switch (section) {
         case 'personal':
             const personalRequiredFields = {
@@ -155,15 +154,8 @@ export const validateForm = (data: any, section: string) => {
 
         case 'location':
             const municipioRequiredFields = {
-                nombre_municipio: 'Nombre del municipio es requerido',
-                codigo_municipio: 'Código del municipio es requerido',
                 area_total: 'Área total es requerida',
                 habitantes_censo_2023: 'Habitantes del censo es requerido',
-            };
-
-            const departamentoRequiredFields = {
-                nombre_departamento: 'Nombre del departamento es requerido',
-                codigo_departamento: 'Código del departamento es requerido',
             };
 
             // Validar campos de municipio
@@ -173,25 +165,30 @@ export const validateForm = (data: any, section: string) => {
                 }
             });
 
-            // Validar campos de departamento
-            Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
-                if (!data[field]) {
-                    errors[field] = message;
-                }
-            });
-
             // Validaciones numéricas
             const locationNumericFields = [
-                'codigo_municipio', 'area_total',
-                'habitantes_censo_2023', 'codigo_departamento'
+                'area_total',
+                'habitantes_censo_2023',
             ];
 
             locationNumericFields.forEach(field => {
                 if (data[field] && (isNaN(data[field]) || data[field] <= 0)) {
-                    errors[field] = `El valor de ${field.replace('_', ' ')} debe ser un número positivo`;
+                    errors[field] = `El valor de ${field.replace(/_/g, ' ')} debe ser un número positivo`;
                 }
             });
+            break;
 
+        case 'departament':
+            const departamentoRequiredFields = {
+                nombre_departamento: 'Nombre del departamento es requerido',
+                id_gobernador: 'Gobernador del departamento es requerido',
+            };
+            // Validar campos de departamento
+            Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
+                if (!data.hasOwnProperty(field) || !data[field]) {
+                    errors[field] = message;
+                }
+            });
             break;
 
         default:
