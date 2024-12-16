@@ -78,7 +78,6 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
                         <option value="">Seleccione...</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
-                        <option value="Otro">Otro</option>
                     </select>
                     {errors.sexo && <p className="mt-1 text-sm text-red-500">{errors.sexo}</p>}
                 </div>
