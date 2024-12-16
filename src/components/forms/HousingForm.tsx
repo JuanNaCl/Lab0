@@ -17,9 +17,15 @@ export const HousingForm: React.FC<HousingFormProps> = ({
     onChange,
     activeSection,
 }) => {
-    // #region ~~~~~~~~~~~~~~~~~~~~ Persona Fetch ~~~~~~~~~~~~~~~~~~~~
     const [personaOptions, setPersonaOptions] = useState<{ value: number, label: string }[]>([]);
-    useEffect(() => { fetchPersonas(); }, []);
+    const [municipioOptions, setMunicipioOptions] = useState<{ value: number, label: string }[]>([]);
+    useEffect(() => {
+            if (activeSection === 'housing') {
+                fetchMunicipios();
+                fetchPersonas()
+            }
+        }, [activeSection]);
+    // #region ~~~~~~~~~~~~~~~~~~~~ Persona Fetch ~~~~~~~~~~~~~~~~~~~
 
     const fetchPersonas = async () => {
         const { data: Persona, error } = await supabase
@@ -37,9 +43,6 @@ export const HousingForm: React.FC<HousingFormProps> = ({
     };
     // #endregion
     // #region ~~~~~~~~~~~~~~~~~~~~ Municipio Fetch ~~~~~~~~~~~~~~~~~~~~
-    const [municipioOptions, setMunicipioOptions] = useState<{ value: number, label: string }[]>([]);
-    useEffect(() => { fetchMunicipios(); }, []);
-
     const fetchMunicipios = async () => {
         const { data: Municipio, error } = await supabase
         .from('Municipio')

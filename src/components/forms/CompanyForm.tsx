@@ -5,7 +5,7 @@ import { Empresa } from '../../types';
 interface CompanyFormProps {
   data: Empresa;
   errors: Record<string, string>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   activeSection: string;
 }
 
