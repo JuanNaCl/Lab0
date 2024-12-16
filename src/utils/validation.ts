@@ -10,6 +10,7 @@ export const validateForm = (data: any, section: string) => {
                 email: 'Email es requerido',
                 celular: 'Celular es requerido',
                 salario: 'Salario es requerido',
+                cedula: 'Cedula es requerida',
             };
 
             Object.entries(personalRequiredFields).forEach(([field, message]) => {
@@ -29,6 +30,16 @@ export const validateForm = (data: any, section: string) => {
             }
             else if (data.celular && data.celular.toString().length !== 10) {
                 errors.celular = 'Celular debe tener 10 dígitos';
+            }
+
+            if (data.cedula && (isNaN(data.cedula) || data.cedula < 0)) {
+                errors.cedula = 'Cedula invalida';
+            }
+            else if (data.cedula && data.cedula.toString().length < 6) {
+                errors.cedula = 'La cedula tiene como minimo 6 digitos';
+            }
+            else if (data.cedula && data.cedula.toString().length > 10) {
+                errors.cedula = 'La cedula tiene como maximo 10 digitos';
             }
 
             if (data.salario && (isNaN(data.salario) || data.salario < 0)) {

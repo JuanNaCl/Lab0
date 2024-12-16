@@ -13,6 +13,7 @@ export interface PersonalInfo extends BaseEntity {
     email: string;
     celular: number;
     salario: number;
+    cedula: number;
 }
 
 export interface Vehiculo extends BaseEntity {

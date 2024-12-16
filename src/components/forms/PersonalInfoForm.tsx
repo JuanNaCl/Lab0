@@ -58,6 +58,15 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
                     error={errors.segundo_apellido}
                 />
                 <FormInput
+                    label="Cedula"
+                    type="number"
+                    name="cedula"
+                    value={data.cedula || ''}
+                    onChange={onChange}
+                    error={errors.cedula}
+                    required
+                />
+                <FormInput
                     label="Fecha de Nacimiento"
                     type="date"
                     name="fecha_nacimiento"

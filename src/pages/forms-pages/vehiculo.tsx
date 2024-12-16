@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { PersonalInfoForm } from '../components/forms/PersonalInfoForm';
-import { validateForm } from '../utils/validation';
-import { PersonalInfo } from '../types';
-import supabase from '../components/common/supabaseClient';
-import { Popup } from '../components/common/popUp';
+import { Popup } from '../../components/common/popUp';
+import supabase from '../../components/common/supabaseClient';
+import { VehicleForm } from '../../components/forms/VehicleForm';
+import { Vehiculo } from '../../types';
+import { validateForm } from '../../utils/validation';
 
-const Personal = () => {
-    const [formData, setFormData] = useState<PersonalInfo>({} as PersonalInfo);
+
+const VehiclePage = () => {
+    const [formData, setFormData] = useState<Vehiculo>({} as Vehiculo);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -27,7 +28,7 @@ const Personal = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'personal');
+        const validationErrors = validateForm(formData, 'vehicles');
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -38,31 +39,30 @@ const Personal = () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form data ready for submission:', formData);
-            console.log('sexo:', formData.sexo);
+
+            const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
+            const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
+
             const { data, error } = await supabase
-                .from('Persona')
-                .insert(
-                    [{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                    }]
-                )
+                .from('Vehiculo')
+                .insert([{
+                    id_dueño: id_dueño,
+                    nombre: formData.nombre,
+                    marca: formData.marca,
+                    tipo: formData.tipo,
+                    color: formData.color,
+                    valor_nuevo: valor_nuevo,
+                    placa: formData.placa,
+                }])
                 .select();
 
             if (error) {
-                console.error('Error inserting personal info:', error);
-                setPopupMessage('Error al guardar datos personales');
+                console.error('Error inserting vehicle data:', error);
+                setPopupMessage('Error al guardar datos del vehículo');
             } else {
-                console.log('Personal info inserted successfully:', data);
-                setPopupMessage('Datos personales guardados exitosamente');
-                setFormData({} as PersonalInfo); // Reset form data
+                console.log('Vehicle data inserted successfully:', data);
+                setPopupMessage('Datos del vehículo guardados exitosamente');
+                setFormData({} as Vehiculo); // Reset form data
             }
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -78,8 +78,8 @@ const Personal = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <PersonalInfoForm
-                            activeSection='personal'
+                        <VehicleForm
+                            activeSection='vehicles'
                             data={formData}
                             errors={errors}
                             onChange={handleChange}
@@ -105,4 +105,4 @@ const Personal = () => {
     );
 };
 
-export default Personal;
+export default VehiclePage;
