@@ -9,10 +9,11 @@ export interface PersonalInfo extends BaseEntity {
     primer_apellido: string;
     segundo_apellido: string;
     fecha_nacimiento: string;
-    sexo: string;
+    sexo: {value: number, label: string};
     email: string;
     celular: number;
     salario: number;
+    cedula: number;
 }
 
 export interface Vehiculo extends BaseEntity {
