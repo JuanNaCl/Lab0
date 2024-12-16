@@ -48,6 +48,12 @@ export interface Vivienda extends BaseEntity {
     tipo: string;
 }
 
+export interface Persona_Vivienda extends BaseEntity {
+    id_persona: number;
+    id_vivienda: number;
+    es_dueño: boolean;
+} 
+
 export interface Municipio extends BaseEntity {
     id_alcalde: number;
     nombre_municipio: string;
