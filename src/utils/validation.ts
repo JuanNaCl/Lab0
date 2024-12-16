@@ -27,6 +27,9 @@ export const validateForm = (data: any, section: string) => {
             if (data.celular && (isNaN(data.celular) || data.celular < 0)) {
                 errors.celular = 'Celular debe ser un número positivo';
             }
+            else if (data.celular && data.celular.toString().length !== 10) {
+                errors.celular = 'Celular debe tener 10 dígitos';
+            }
 
             if (data.salario && (isNaN(data.salario) || data.salario < 0)) {
                 errors.salario = 'Salario debe ser un número positivo';

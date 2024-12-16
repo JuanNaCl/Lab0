@@ -38,7 +38,7 @@ const Personal = () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form data ready for submission:', formData);
-
+            console.log('sexo:', formData.sexo);
             const { data, error } = await supabase
                 .from('Persona')
                 .insert(
@@ -48,7 +48,7 @@ const Personal = () => {
                         primer_apellido: formData.primer_apellido,
                         segundo_apellido: formData.segundo_apellido,
                         fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo,
+                        sexo: formData.sexo.value,
                         email: formData.email,
                         celular: formData.celular,
                         salario: formData.salario,
