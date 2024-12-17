@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PersonalInfoForm } from '../../components/forms/PersonalInfoForm';
+import { WorkForm } from '../../components/forms/WorkForm';
 import { validateForm } from '../../utils/validation';
-import { PersonalInfo } from '../../types';
+import { Trabajo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Save } from 'lucide-react';
 
-const Personal = () => {
-    const [formData, setFormData] = useState<PersonalInfo>({} as PersonalInfo);
+const TrabajoPage = () => {
+    const [formData, setFormData] = useState<Trabajo>({} as Trabajo);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -20,21 +20,21 @@ const Personal = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchPersona = async (id: string) => {
+        const fetchTrabajo = async (id: string) => {
             const { data, error } = await supabase
-                .from('Persona')
+                .from('Trabajo')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching persona:', error);
+                console.error('Error fetching trabajo:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchPersona(editId);
+            fetchTrabajo(editId);
         }
     }, [editId]);
 
@@ -53,7 +53,7 @@ const Personal = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'personal');
+        const validationErrors = validateForm(formData, 'work');
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             setIsSubmitting(false);
@@ -68,47 +68,28 @@ const Personal = () => {
             if (editId) {
                 // Update existing record
                 ({ data, error } = await supabase
-                    .from('Persona')
-                    .update([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
-                    }])
+                    .from('Trabajo')
+                    .update([formData])
                     .eq('id', editId)
                     .select());
             } else {
                 // Insert new record
                 ({ data, error } = await supabase
-                    .from('Persona')
+                    .from('Trabajo')
                     .insert([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
+                        nombre: formData.nombre,
+                        media_salarial: formData.media_salarial,
                     }])
                     .select());
             }
 
             if (error) {
-                console.error('Error saving personal info:', error);
-                setPopupMessage('Error al guardar datos personales');
+                console.error('Error saving trabajo info:', error);
+                setPopupMessage('Error al guardar datos del trabajo');
             } else {
-                console.log('Personal info saved successfully:', data);
-                setPopupMessage('Datos personales guardados exitosamente');
-                setFormData({} as PersonalInfo); // Reset form data if not editing
+                console.log('Trabajo info saved successfully:', data);
+                setPopupMessage('Datos del trabajo guardados exitosamente');
+                setFormData({} as Trabajo); // Reset form data if not editing
                 setShowPopup(true);
 
                 if (editId) {
@@ -126,7 +107,7 @@ const Personal = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/personal-list');
+                        navigate('/work-list');
                     }, 2800); // Delay to allow the toast to be visible
                 }
             }
@@ -143,8 +124,8 @@ const Personal = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <PersonalInfoForm
-                            activeSection='personal'
+                        <WorkForm
+                            activeSection='work'
                             data={formData}
                             errors={errors}
                             onChange={handleChange}
@@ -173,4 +154,4 @@ const Personal = () => {
     );
 };
 
-export default Personal;
+export default TrabajoPage;

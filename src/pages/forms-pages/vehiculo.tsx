@@ -4,6 +4,7 @@ import supabase from '../../components/common/supabaseClient';
 import { VehicleForm } from '../../components/forms/VehicleForm';
 import { Vehiculo } from '../../types';
 import { validateForm } from '../../utils/validation';
+import { Save } from 'lucide-react';
 
 
 const VehiclePage = () => {
@@ -88,8 +89,10 @@ const VehiclePage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
+                                    transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
                             >
+                                <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
                             </button>
                         </div>
