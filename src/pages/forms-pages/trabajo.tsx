@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { VehicleForm } from '../../components/forms/VehicleForm';
+import { WorkForm } from '../../components/forms/WorkForm';
 import { validateForm } from '../../utils/validation';
-import { Save } from 'lucide-react';
-import { Vehiculo } from '../../types';
+import { Trabajo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Save } from 'lucide-react';
 
-
-const VehiclePage = () => {
-    const [formData, setFormData] = useState<Vehiculo>({} as Vehiculo);
+const TrabajoPage = () => {
+    const [formData, setFormData] = useState<Trabajo>({} as Trabajo);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -21,21 +20,21 @@ const VehiclePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchVehicleById = async (id: string) => {
+        const fetchTrabajo = async (id: string) => {
             const { data, error } = await supabase
-                .from('Vehiculo')
+                .from('Trabajo')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching vehiculo:', error);
+                console.error('Error fetching trabajo:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchVehicleById(editId);
+            fetchTrabajo(editId);
         }
     }, [editId]);
 
@@ -54,8 +53,7 @@ const VehiclePage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'vehicles');
-
+        const validationErrors = validateForm(formData, 'work');
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             setIsSubmitting(false);
@@ -66,57 +64,42 @@ const VehiclePage = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form data ready for submission:', formData);
 
-            const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
-            const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
-
             let data, error;
             if (editId) {
                 // Update existing record
-                console.log('es una edicion');
                 ({ data, error } = await supabase
-                    .from('Vehiculo')
-                    .update({
-                        nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
-                    })
+                    .from('Trabajo')
+                    .update([formData])
                     .eq('id', editId)
                     .select());
             } else {
+                // Insert new record
                 ({ data, error } = await supabase
-                    .from('Vehiculo')
+                    .from('Trabajo')
                     .insert([{
-                        id_dueño: id_dueño,
                         nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
+                        media_salarial: formData.media_salarial,
                     }])
                     .select());
             }
 
             if (error) {
-                console.error('Error inserting vehicle data:', error);
-                setPopupMessage('Error al guardar datos del vehículo');
+                console.error('Error saving trabajo info:', error);
+                setPopupMessage('Error al guardar datos del trabajo');
             } else {
-                console.log('Vehicle data inserted successfully:', data);
-                setPopupMessage('Datos del vehículo guardados exitosamente');
-                setFormData({} as Vehiculo); // Reset form data
+                console.log('Trabajo info saved successfully:', data);
+                setPopupMessage('Datos del trabajo guardados exitosamente');
+                setFormData({} as Trabajo); // Reset form data if not editing
                 setShowPopup(true);
+
                 if (editId) {
-                    console.log('es una edicion y se redirige');
                     setShowPopup(false);
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 3500,
+                        autoClose: 2750,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -124,8 +107,8 @@ const VehiclePage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/vehiculo-list');
-                    }, 1000); // Delay to allow the toast to be visible
+                        navigate('/work-list');
+                    }, 2800); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -141,8 +124,8 @@ const VehiclePage = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <VehicleForm
-                            activeSection='vehicles'
+                        <WorkForm
+                            activeSection='work'
                             data={formData}
                             errors={errors}
                             onChange={handleChange}
@@ -166,8 +149,9 @@ const VehiclePage = () => {
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
             />
+            <ToastContainer />
         </div>
     );
 };
 
-export default VehiclePage;
+export default TrabajoPage;

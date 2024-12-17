@@ -205,6 +205,32 @@ export const validateForm = (data: any, section: string) => {
             });
             break;
 
+        case 'work':
+            const workRequiredFields = {
+                nombre: 'Nombre del trabajo es requerido',
+                media_salarial: 'La media salarial del trabajo es requerida',
+            };
+            // Validar campos de departamento
+            Object.entries(workRequiredFields).forEach(([field, message]) => {
+                if (!data.hasOwnProperty(field) || !data[field]) {
+                    errors[field] = message;
+                }
+            });
+            const worknumericFields = [
+                'media_salarial',
+            ];
+
+            worknumericFields.forEach(field => {
+                if (data[field] && (isNaN(data[field]) || data[field] < 0)) {
+                    errors[field] = `El valor de ${field.replace('_', ' ')} debe ser un número positivo`;
+                }
+                if (data.media_salarial && (data.media_salarial > 2000000000)) {
+                    errors.media_salarial = 'El valor maximo es de 2 mil millones';
+                }
+            });
+
+            break;
+
         default:
             break;
     }
