@@ -203,8 +203,29 @@ function App() {
         case 'work':
           console.log('Submitting work info:');
           break;
-        case 'company':
+        case 'company':{
           console.log('Submitting company info:');
+          const companyData = formData[activeSection as FormDataKey];
+          console.log(companyData);
+          console.log(companyData.id_departamento_constitucion);
+          const { data: data, error: empresaError } = await supabase
+          .from('Empresa')
+            .insert([{
+              nombre: companyData.nombre,
+              id_departamento_constitucion: parseInt(companyData.id_departamento_constitucion.value),
+            }])
+            .select() // Retorna el registro insertado
+            if (empresaError) {
+              console.error('Error inserting company data:', empresaError);
+              setPopupMessage('Error al guardar datos de la empresa');
+              break;       
+            }
+            else {
+              console.log('Company data inserted successfully:', data);
+              setPopupMessage('Datos de la empresa guardados exitosamente');
+              submissionResult = data;
+            }
+          }
           break;
           
         // Add similar cases for other form sections

@@ -27,7 +27,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
 
     
     const fetchPersonas = async () => {
-        let { data: Persona, error } = await supabase
+        const { data: Persona, error } = await supabase
             .from('Persona')
             .select('*');
         if (error) {

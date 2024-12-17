@@ -30,7 +30,7 @@ export const DepartamentForm: React.FC<DepartamentFormProps> = ({
     
 
     const fetchDepartamentos = async () => {
-        let { data: Departamentos, error } = await supabase
+        const { data: Departamentos, error } = await supabase
             .from('Departamento')
             .select('*')
             .is('id_gobernador', null);
@@ -47,7 +47,7 @@ export const DepartamentForm: React.FC<DepartamentFormProps> = ({
 
     const fetchPersonas = async () => {
         // Primero, obtenemos los Departamentos que tienen alcaldes
-        let { data: DepartamentosConGobernador, error: DepartamentoError } = await supabase
+        const { data: DepartamentosConGobernador, error: DepartamentoError } = await supabase
             .from('Departamento')
             .select('id, id_gobernador')
             .not('id_gobernador', 'is', null);
