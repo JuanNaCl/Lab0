@@ -33,7 +33,7 @@ export interface Comparendo extends BaseEntity {
     fecha: string;
     razon: string;
     nota: string;
-    imagen: string;
+    id_vehiculo: number;
 }
 
 export interface Vivienda extends BaseEntity {
