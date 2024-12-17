@@ -17,10 +17,10 @@ export interface PersonalInfo extends BaseEntity {
 }
 
 export interface Vehiculo extends BaseEntity {
-    id_dueño: number;
+    id_dueño: any;
     nombre: string;
     marca: string;
-    tipo: string;
+    tipo: any;
     color: string;
     valor_nuevo: number;
     placa: string;
@@ -50,8 +50,8 @@ export interface Vivienda extends BaseEntity {
 }
 
 export interface Municipio extends BaseEntity {
-    id_alcalde: number;
-    nombre_municipio: string;
+    id_alcalde: any;
+    nombre_municipio: any;
     id_departamento: number;
     codigo_municipio: number;
     area_total: number;
