@@ -50,8 +50,8 @@ export interface Vivienda extends BaseEntity {
 }
 
 export interface Municipio extends BaseEntity {
-    id_alcalde: number;
-    nombre_municipio: string;
+    id_alcalde: any;
+    nombre_municipio: any;
     id_departamento: number;
     codigo_municipio: number;
     area_total: number;
