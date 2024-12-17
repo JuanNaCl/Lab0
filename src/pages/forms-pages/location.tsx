@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { VehicleForm } from '../../components/forms/VehicleForm';
 import { validateForm } from '../../utils/validation';
-import { Save } from 'lucide-react';
-import { Vehiculo } from '../../types';
+import { Municipio } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { LocationForm } from '../../components/forms/LocationForm';
 
 
-const VehiclePage = () => {
-    const [formData, setFormData] = useState<Vehiculo>({} as Vehiculo);
+const LocationPage = () => {
+    const [formData, setFormData] = useState<Municipio>({} as Municipio);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -21,21 +20,21 @@ const VehiclePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchVehicleById = async (id: string) => {
+        const fetchMunicipioById = async (id: string) => {
             const { data, error } = await supabase
-                .from('Vehiculo')
+                .from('Municipio')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching vehiculo:', error);
+                console.error('Error fetching Municipio:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchVehicleById(editId);
+            fetchMunicipioById(editId);
         }
     }, [editId]);
 
@@ -54,59 +53,57 @@ const VehiclePage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'vehicles');
+        console.log('Form data:', formData);
+
+        const validationErrors = validateForm(formData, 'location');
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            console.error('Form validation errors:', validationErrors);
             setIsSubmitting(false);
             return;
         }
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('Form data ready for submission:', formData);
-
-            const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
-            const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
 
             let data, error;
-            if (editId) {
-                // Update existing record
-                console.log('es una edicion');
-                ({ data, error } = await supabase
-                    .from('Vehiculo')
-                    .update({
-                        nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
-                    })
-                    .eq('id', editId)
-                    .select());
+
+            // Normalizar los valores del formulario
+            const normalizedFormData = {
+                id_alcalde: formData.id_alcalde?.value || formData.id_alcalde, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                area_total: formData.area_total,
+                habitantes_censo_2023: formData.habitantes_censo_2023,
+                nombre_municipio: formData.nombre_municipio?.value || formData.nombre_municipio, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+            };
+            
+            console.log('Es una edición');
+            console.log('Form data:', normalizedFormData);
+            
+            ({ data, error } = await supabase
+                .from('Municipio')
+                .update({
+                    id_alcalde: normalizedFormData.id_alcalde,
+                    area_total: normalizedFormData.area_total,
+                    habitantes_censo_2023: normalizedFormData.habitantes_censo_2023,
+                })
+                .eq('id', normalizedFormData.nombre_municipio)
+                .select());
+            
+            if (error) {
+                console.error("Error updating Municipio:", error);
             } else {
-                ({ data, error } = await supabase
-                    .from('Vehiculo')
-                    .insert([{
-                        id_dueño: id_dueño,
-                        nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
-                    }])
-                    .select());
+                console.log("Updated Municipio data:", data);
             }
+            
 
             if (error) {
-                console.error('Error inserting vehicle data:', error);
-                setPopupMessage('Error al guardar datos del vehículo');
+                console.error('Error inserting municipio data:', error);
+                setPopupMessage('Error al guardar datos del municipio');
             } else {
-                console.log('Vehicle data inserted successfully:', data);
-                setPopupMessage('Datos del vehículo guardados exitosamente');
-                setFormData({} as Vehiculo); // Reset form data
+                console.log('Municipio data inserted successfully:', data);
+                setPopupMessage('Datos del municipio guardados exitosamente');
+                setFormData({} as Municipio); // Reset form data
                 setShowPopup(true);
                 if (editId) {
                     console.log('es una edicion y se redirige');
@@ -124,7 +121,7 @@ const VehiclePage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/vehiculo-list');
+                        navigate('/location-list');
                     }, 1000); // Delay to allow the toast to be visible
                 }
             }
@@ -141,9 +138,9 @@ const VehiclePage = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <VehicleForm
+                        <LocationForm
                             activeSection='vehicles'
-                            data={formData}
+                            municipioData={formData}
                             errors={errors}
                             onChange={handleChange}
                         />
@@ -151,10 +148,8 @@ const VehiclePage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
-                                    transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
                             >
-                                <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
                             </button>
                         </div>
@@ -170,4 +165,4 @@ const VehiclePage = () => {
     );
 };
 
-export default VehiclePage;
+export default LocationPage;
