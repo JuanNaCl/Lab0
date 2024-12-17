@@ -169,7 +169,7 @@ const TicketPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-indigo-500 text-white rounded-lg 
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
                                     transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-indigo-600 hover:scale-105'}`}
                             >
                                 <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />

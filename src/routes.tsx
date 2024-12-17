@@ -8,6 +8,8 @@ import WorkListPage from './pages/list-pages/trabajo-list';
 import VehiclesListPage from './pages/list-pages/vehiculo-list';
 import LocationListPage from './pages/list-pages/location-list';
 import LocationPage from './pages/forms-pages/location';
+import TicketPage from './pages/forms-pages/ticket'
+import TicketListPage from './pages/list-pages/ticket-list'
 
 const AppRoutes = () => (
   <Router>
@@ -22,6 +24,8 @@ const AppRoutes = () => (
       <Route path="/location-forms" element={<LocationPage />} />
       <Route path="/location-list" element={<LocationListPage />} />
       {/* Add routes for other sections */}
+      <Route path="/ticket-forms" element={<TicketPage />} />
+      <Route path="/ticket-list" element={<TicketListPage />} />
     </Routes>
   </Router>
 );

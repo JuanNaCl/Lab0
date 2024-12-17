@@ -54,7 +54,7 @@ const TicketListPage = () => {
                         <h1 className="text-2xl font-bold">Comparendos</h1>
                         <button
                             onClick={() => navigate('/ticket-forms')}
-                            className="flex items-center space-x-2 px-6 py-2 bg-indigo-500 text-white rounded-lg transition-all duration-200 transform hover:bg-indigo-600 hover:scale-105"
+                            className="flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform hover:bg-emerald-600 hover:scale-105"
                         >
                             Crear
                         </button>
