@@ -96,7 +96,7 @@ const VehiclesListPage = () => {
                                                 icon={<EditIcon style={{ color: 'green' }} />}
                                                 appearance="primary"
                                                 size="xs"
-                                                onClick={() => navigate(`/personal-forms?edit=${rowData.id}`)}
+                                                onClick={() => navigate(`/vehiculo-forms?edit=${rowData.id}`)}
                                                 className="mr-2"
                                             />
                                             <IconButton

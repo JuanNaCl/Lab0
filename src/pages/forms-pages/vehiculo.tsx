@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Popup } from '../../components/common/popUp';
-import supabase from '../../components/common/supabaseClient';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { VehicleForm } from '../../components/forms/VehicleForm';
-import { Vehiculo } from '../../types';
 import { validateForm } from '../../utils/validation';
+import { Vehiculo } from '../../types';
+import supabase from '../../components/common/supabaseClient';
+import { Popup } from '../../components/common/popUp';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const VehiclePage = () => {
@@ -12,6 +15,28 @@ const VehiclePage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [searchParams] = useSearchParams();
+    const editId = searchParams.get('edit');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchVehicleById = async (id: string) => {
+            const { data, error } = await supabase
+                .from('Vehiculo')
+                .select('*')
+                .eq('id', id)
+                .single();
+            if (error) {
+                console.error('Error fetching vehiculo:', error);
+            } else {
+                setFormData(data);
+            }
+        };
+
+        if (editId) {
+            fetchVehicleById(editId);
+        }
+    }, [editId]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -43,18 +68,36 @@ const VehiclePage = () => {
             const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
             const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
 
-            const { data, error } = await supabase
-                .from('Vehiculo')
-                .insert([{
-                    id_dueño: id_dueño,
-                    nombre: formData.nombre,
-                    marca: formData.marca,
-                    tipo: formData.tipo,
-                    color: formData.color,
-                    valor_nuevo: valor_nuevo,
-                    placa: formData.placa,
-                }])
-                .select();
+            let data, error;
+            if (editId) {
+                // Update existing record
+                console.log('es una edicion');
+                ({ data, error } = await supabase
+                    .from('Vehiculo')
+                    .update({
+                        nombre: formData.nombre,
+                        marca: formData.marca,
+                        tipo: formData.tipo,
+                        color: formData.color,
+                        valor_nuevo: valor_nuevo,
+                        placa: formData.placa,
+                    })
+                    .eq('id', editId)
+                    .select());
+            } else {
+                ({ data, error } = await supabase
+                    .from('Vehiculo')
+                    .insert([{
+                        id_dueño: id_dueño,
+                        nombre: formData.nombre,
+                        marca: formData.marca,
+                        tipo: formData.tipo,
+                        color: formData.color,
+                        valor_nuevo: valor_nuevo,
+                        placa: formData.placa,
+                    }])
+                    .select());
+            }
 
             if (error) {
                 console.error('Error inserting vehicle data:', error);
@@ -63,13 +106,32 @@ const VehiclePage = () => {
                 console.log('Vehicle data inserted successfully:', data);
                 setPopupMessage('Datos del vehículo guardados exitosamente');
                 setFormData({} as Vehiculo); // Reset form data
+                setShowPopup(true);
+                if (editId) {
+                    console.log('es una edicion y se redirige');
+                    setShowPopup(false);
+                    toast.success(
+                        <>
+                            Actualización Exitosa.<br />Sera redirigido en breve.
+                        </>, {
+                        position: "top-right",
+                        autoClose: 3500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setTimeout(() => {
+                        navigate('/vehiculo-list');
+                    }, 1000); // Delay to allow the toast to be visible
+                }
             }
         } catch (error) {
             console.error('Error submitting form:', error);
             setPopupMessage('Ocurrió un error al guardar');
         } finally {
             setIsSubmitting(false);
-            setShowPopup(true);
         }
     };
 

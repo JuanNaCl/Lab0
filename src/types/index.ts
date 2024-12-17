@@ -17,10 +17,10 @@ export interface PersonalInfo extends BaseEntity {
 }
 
 export interface Vehiculo extends BaseEntity {
-    id_dueño: number;
+    id_dueño: any;
     nombre: string;
     marca: string;
-    tipo: string;
+    tipo: any;
     color: string;
     valor_nuevo: number;
     placa: string;
