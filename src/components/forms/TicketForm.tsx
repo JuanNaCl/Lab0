@@ -68,6 +68,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                         label: vehicle.nombre,
                     }))}
                     error={errors.id_vehiculo}
+                    required
                 />
 
                 {/* Poseedor/Persona */}
@@ -81,6 +82,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                         label: person.nombre,
                     }))}
                     error={errors.id_poseedor}
+                    required
                 />
 
                 {/* Monto */}
@@ -91,6 +93,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                     value={data.monto}
                     onChange={onChange}
                     error={errors.monto}
+                    required
                 />
 
                 {/* Fecha */}
@@ -101,6 +104,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                     value={data.fecha}
                     onChange={onChange}
                     error={errors.fecha}
+                    required
                 />
 
                 {/* Razón */}
@@ -111,6 +115,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                     value={data.razon}
                     onChange={onChange}
                     error={errors.razon}
+                    required
                 />
 
                 {/* Nota */}

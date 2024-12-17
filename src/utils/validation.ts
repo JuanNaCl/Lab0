@@ -230,7 +230,37 @@ export const validateForm = (data: any, section: string) => {
             });
 
             break;
-
+        case 'ticket':
+            const ticketRequiredFields = {
+                id_vehiculo: 'Vehículo es requerido',
+                id_poseedor: 'Poseedor es requerido',
+                monto: 'Monto es requerido',
+                fecha: 'Fecha es requerida',
+                razon: 'Razón es requerida',
+            };
+            
+            Object.entries(ticketRequiredFields).forEach(([field, message]) => {
+                if (!data[field]) {
+                    errors[field] = message;
+                }
+            });
+            
+            // Validación de monto
+            if (data.monto && (isNaN(data.monto) || data.monto <= 0)) {
+                errors.monto = 'El monto debe ser un número positivo';
+            }
+            
+            // Validación de fecha
+            if (data.fecha) {
+                const inputDate = new Date(data.fecha);
+                const today = new Date();
+            
+                if (inputDate > today) {
+                    errors.fecha = 'La fecha no puede ser futura';
+                }
+            }
+            break;
+            
         default:
             break;
     }
