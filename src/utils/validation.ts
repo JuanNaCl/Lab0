@@ -36,7 +36,7 @@ export const validateForm = (data: any, section: string) => {
                 errors.cedula = 'Cedula invalida';
             }
             else if (data.cedula && data.cedula.toString().length < 6) {
-                errors.cedula = 'La cedula tiene como minimo 6 digitos';
+                errors.cedula = 'La cedula tiene como mínimo 6 digitos';
             }
             else if (data.cedula && data.cedula.toString().length > 10) {
                 errors.cedula = 'La cedula tiene como maximo 10 digitos';
