@@ -6,7 +6,7 @@ import { Save } from 'lucide-react';
 import { Vehiculo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -116,7 +116,7 @@ const VehiclePage = () => {
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 3500,
+                        autoClose: 1600,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -124,8 +124,8 @@ const VehiclePage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/vehiculo-list');
-                    }, 1000); // Delay to allow the toast to be visible
+                        navigate(-1);
+                    }, 2000); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -164,8 +164,13 @@ const VehiclePage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false)
+                    navigate(-1);
+                }
+                }
             />
+            <ToastContainer />
         </div>
     );
 };

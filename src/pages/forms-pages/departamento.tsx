@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { WorkForm } from '../../components/forms/WorkForm';
 import { validateForm } from '../../utils/validation';
-import { Trabajo } from '../../types';
+import { Departamento } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Save } from 'lucide-react';
+import { DepartamentForm } from '../../components/forms/DepartamentoForm';
 
-const TrabajoPage = () => {
-    const [formData, setFormData] = useState<Trabajo>({} as Trabajo);
+
+const DepartamentoPage = () => {
+    const [formData, setFormData] = useState<Departamento>({} as Departamento);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -20,21 +20,21 @@ const TrabajoPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchTrabajo = async (id: string) => {
+        const fetchDepartamentoById = async (id: string) => {
             const { data, error } = await supabase
-                .from('Trabajo')
+                .from('Departamento')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching trabajo:', error);
+                console.error('Error fetching Departamento:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchTrabajo(editId);
+            fetchDepartamentoById(editId);
         }
     }, [editId]);
 
@@ -53,58 +53,64 @@ const TrabajoPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'work');
+        console.log('Form data:', formData);
+
+        const validationErrors = validateForm(formData, 'departamento');
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            console.error('Form validation errors:', validationErrors);
             setIsSubmitting(false);
             return;
         }
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('Form data ready for submission:', formData);
 
             let data, error;
-            if (editId) {
-                // Update existing record
-                ({ data, error } = await supabase
-                    .from('Trabajo')
-                    .update([{
-                        nombre: formData.nombre,
-                        media_salarial: formData.media_salarial,
-                        id_empresa: parseInt(formData.id_empresa.value),
-                    }])
-                    .eq('id', editId)
-                    .select());
+
+            // Normalizar los valores del formulario
+            const normalizedFormData = {
+                id_gobernador: typeof formData.id_gobernador === 'object' ? formData.id_gobernador?.value : formData.id_gobernador, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_Departamento: formData.nombre_departamento.value ? formData.nombre_departamento.value : formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+            };
+            
+            console.log('Es una edición', formData);
+            console.log('Form data normalized:', normalizedFormData);
+            
+            ({ data, error } = await supabase
+                .from('Departamento')
+                .update({
+                    id_gobernador: normalizedFormData.id_gobernador,
+                })
+                .eq('id', normalizedFormData.nombre_Departamento)
+                .select());
+            
+            if (error) {
+                console.error("Error updating Departamento:", error);
             } else {
-                // Insert new record
-                ({ data, error } = await supabase
-                    .from('Trabajo')
-                    .insert([{
-                        nombre: formData.nombre,
-                        media_salarial: formData.media_salarial,
-                        id_empresa: parseInt(formData.id_empresa.value),
-                    }])
-                    .select());
+                console.log("Updated Departamento data:", data);
             }
+            
 
             if (error) {
-                console.error('Error saving trabajo info:', error);
-                setPopupMessage('Error al guardar datos del trabajo');
+                console.error('Error inserting Departamento data:', error);
+                setPopupMessage('Error al guardar datos del Departamento');
             } else {
-                console.log('Trabajo info saved successfully:', data);
-                setPopupMessage('Datos del trabajo guardados exitosamente');
-                setFormData({} as Trabajo); // Reset form data if not editing
+                console.log('Departamento data inserted successfully:', data);
+                setPopupMessage('Datos del Departamento guardados exitosamente');
+                setFormData({} as Departamento); // Reset form data
                 setShowPopup(true);
 
                 if (editId) {
                     setShowPopup(false);
+                    console.log('Actualización Exitosa');
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 1800,
+                        autoClose: 1600,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -112,8 +118,8 @@ const TrabajoPage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/work-list');
-                    }, 1850); // Delay to allow the toast to be visible
+                        navigate('/departamento-list');
+                    }, 2000); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -129,9 +135,8 @@ const TrabajoPage = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <WorkForm
-                            activeSection='work'
-                            data={formData}
+                        <DepartamentForm
+                            departamentoData={formData}
                             errors={errors}
                             onChange={handleChange}
                         />
@@ -139,10 +144,8 @@ const TrabajoPage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
-                                    transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
                             >
-                                <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
                             </button>
                         </div>
@@ -152,11 +155,15 @@ const TrabajoPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false)
+                    navigate(-1);
+                    }
+                }
             />
             <ToastContainer />
         </div>
     );
 };
 
-export default TrabajoPage;
+export default DepartamentoPage;

@@ -228,7 +228,18 @@ export const validateForm = (data: any, section: string) => {
                     errors.media_salarial = 'El valor maximo es de 2 mil millones';
                 }
             });
+            break;
 
+        case 'work-apply':
+            const workApplyRequiredFields = {
+                id_persona: 'El nombre de la Persona es requerido',
+            };
+            // Validar campos de departamento
+            Object.entries(workApplyRequiredFields).forEach(([field, message]) => {
+                if (!data.hasOwnProperty(field) || !data[field]) {
+                    errors[field] = message;
+                }
+            });
             break;
         case 'ticket':
             const ticketRequiredFields = {

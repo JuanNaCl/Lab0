@@ -59,13 +59,19 @@ export interface Municipio extends BaseEntity {
 }
 
 export interface Departamento extends BaseEntity {
-    id_gobernador: number;
-    nombre_departamento: string;
+    id_gobernador: any;
+    nombre_departamento: any;
 }
 
 export interface Trabajo extends BaseEntity {
     nombre: string;
     media_salarial: number;
+    id_empresa: any;
+}
+
+export interface Aplicacion extends BaseEntity {
+    id_trabajo: any;
+    id_persona: any;
 }
 
 export interface Empresa extends BaseEntity {

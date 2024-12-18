@@ -7,75 +7,103 @@ interface DepartamentFormProps {
     departamentoData: Departamento;
     errors: Record<string, string>;
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    activeSection: string;
 }
 
 export const DepartamentForm: React.FC<DepartamentFormProps> = ({
     departamentoData,
     errors,
     onChange,
-    activeSection,
 }) => {
 
 
     const [personaOptions, setPersonaOptions] = useState<{ value: number, label: string }[]>([]);
     const [nameDepartamentos, setNameDepartamentos] = useState<{ value: number, label: string }[]>([]);
-    useEffect(() => {
-        if (activeSection === 'departament') {
-            fetchDepartamentos();
-            fetchPersonas()
-        }
-    }, [activeSection]);
-
-    
 
     const fetchDepartamentos = async () => {
         let { data: Departamentos, error } = await supabase
             .from('Departamento')
             .select('*')
             .is('id_gobernador', null);
+    
         if (error) {
-            console.error("Error fetching Departamento:", error);
+            console.error("Error fetching Departamentos:", error);
         } else if (Departamentos?.length === 0) {
-            console.error("No Departamento found");
-        } else {
-            const formattedOptions = Departamentos!.map(Departamento => ({
-                value: Departamento.id!, label: `(${Departamento.codigo_departamento}) ${Departamento.nombre_departamento}`,
-            })); setNameDepartamentos(formattedOptions);
+            console.error("No Departamentos found");
         }
+    
+        // Añadir el departamento actual a la lista si no está presente
+        if (departamentoData.id) {
+            const departamentoActual = await supabase
+                .from('Departamento')
+                .select('*')
+                .eq('id', departamentoData.id)
+                .single();
+    
+            if (departamentoActual.data && 
+                !Departamentos?.some(d => d.id === departamentoActual.data.id)) {
+                Departamentos?.push(departamentoActual.data);
+            }
+        }
+    
+        // Formatear las opciones
+        const formattedOptions = Departamentos!.map(departamento => ({
+            value: departamento.id,
+            label: `(${departamento.codigo_departamento}) ${departamento.nombre_departamento}`,
+        }));
+    
+        setNameDepartamentos(formattedOptions);
     };
+    
 
     const fetchPersonas = async () => {
-        // Primero, obtenemos los Departamentos que tienen alcaldes
-        let { data: DepartamentosConGobernador, error: DepartamentoError } = await supabase
+        // Primero, obtenemos los Departamentos que tienen un gobernador
+        const { data: DepartamentosConGobernador, error: DepartamentoError } = await supabase
             .from('Departamento')
             .select('id, id_gobernador')
             .not('id_gobernador', 'is', null);
-
+        
         if (DepartamentoError) {
             console.error(DepartamentoError);
         } else if (DepartamentosConGobernador?.length === 0) {
             console.log("No Departamentos found");
         }
-        // Extraemos los ids de los alcaldes
+        
+        // Extraemos los ids de los gobernadores
         const gobernadorIds = DepartamentosConGobernador!.map(Departamento => parseInt(Departamento.id_gobernador));
-        // Luego, obtenemos las personas que no son alcaldes
-        let { data: personas, error: personaError } = await supabase
+        
+        // Luego, obtenemos todas las personas
+        const { data: todasPersonas, error: todasPersonasError } = await supabase
             .from('Persona')
-            .select('*')
-            .not('id', 'in', `(${gobernadorIds.join(',')})`);
-        if (personaError) {
-            console.error("Error fetching Personas:", personaError);
-        } else if (personas?.length === 0) {
+            .select('*');
+        
+        if (todasPersonasError) {
+            console.error("Error fetching all Personas:", todasPersonasError);
+        } else if (todasPersonas?.length === 0) {
             console.error("No Personas found");
-        } else {
-            const formattedOptions = personas!.map(persona => ({
-                value: persona.id!, label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
-            })); setPersonaOptions(formattedOptions);
         }
+        
+        // Añadimos la persona con el id actual de gobernador si no está en gobernadorIds
+        if (departamentoData.id_gobernador && !gobernadorIds.includes(departamentoData.id_gobernador)) {
+            gobernadorIds.push(departamentoData.id_gobernador);
+        }
+        
+        // Filtramos para obtener solo las personas que no son gobernadores o la persona que tiene el id actual de gobernador
+        const personasFiltradas = todasPersonas!.filter(persona => 
+            !gobernadorIds.includes(persona.id!) || persona.id === departamentoData.id_gobernador);
+        
+        const formattedOptions = personasFiltradas!.map(persona => ({
+            value: persona.id!,
+            label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+        }));
+        
+        setPersonaOptions(formattedOptions);
     };
+    
 
-    if (activeSection !== 'departament') return null;
+    useEffect(() => {
+        fetchDepartamentos();
+        fetchPersonas();
+    }, [departamentoData]); 
     return (
         <div className="space-y-8">
             <div>
@@ -96,7 +124,9 @@ export const DepartamentForm: React.FC<DepartamentFormProps> = ({
                         label="Nombre del departamento"
                         options={nameDepartamentos}
                         name="nombre_departamento"
-                        value={departamentoData.nombre_departamento}
+                        value={nameDepartamentos.find((option) =>
+                            option.value === departamentoData.id || option.value === departamentoData.nombre_departamento?.value
+                        )}
                         onChange={onChange}
                         error={errors.nombre_departamento}
                         required
@@ -105,7 +135,7 @@ export const DepartamentForm: React.FC<DepartamentFormProps> = ({
                         label="Nombre del gobernador"
                         options={personaOptions}
                         name="id_gobernador"
-                        value={departamentoData.id_gobernador}
+                        value={personaOptions.find((option) => option.value === departamentoData.id_gobernador)}
                         onChange={onChange}
                         error={errors.id_gobernador}
                         required
