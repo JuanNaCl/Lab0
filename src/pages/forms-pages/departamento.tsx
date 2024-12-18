@@ -7,6 +7,7 @@ import { Popup } from '../../components/common/popUp';
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DepartamentForm } from '../../components/forms/DepartamentoForm';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 
 const DepartamentoPage = () => {
@@ -132,6 +133,7 @@ const DepartamentoPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"departamento"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
