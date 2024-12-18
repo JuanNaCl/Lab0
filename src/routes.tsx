@@ -15,6 +15,10 @@ import WorkApplyPage from './pages/forms-pages/work-apply';
 import DepartamentoListPage from './pages/list-pages/departamento';
 import DepartamentoPage from './pages/forms-pages/departamento';
 import AppNueva from './AppNueva';
+import HousingListPage from './pages/list-pages/housing-list';
+import HousingPage from './pages/forms-pages/housing';
+import CompanyListPage from './pages/list-pages/company-list';
+import CompanyPage from './pages/forms-pages/company';
 
 const AppRoutes = () => (
   <Router>
@@ -31,6 +35,10 @@ const AppRoutes = () => (
       <Route path="/location-list" element={<LocationListPage />} />
       <Route path="/departamento-forms" element={<DepartamentoPage />} />
       <Route path="/departamento-list" element={<DepartamentoListPage />} />
+      <Route path="/housing-forms" element={<HousingPage />} />
+      <Route path="/company-forms" element={<CompanyPage />} />
+      <Route path="/company-list" element={<CompanyListPage />} />
+      <Route path="/housing-list" element={<HousingListPage />} />
       {/* Add routes for other sections */}
       <Route path="/ticket-forms" element={<TicketPage />} />
       <Route path="/fines-list" element={<TicketListPage />} />
