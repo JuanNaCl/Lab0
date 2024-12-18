@@ -74,11 +74,11 @@ const LocationPage = () => {
                 id_alcalde: formData.id_alcalde?.value || formData.id_alcalde, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
                 area_total: formData.area_total,
                 habitantes_censo_2023: formData.habitantes_censo_2023,
-                nombre_municipio: formData.nombre_municipio?.value || formData.nombre_municipio, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_municipio: formData.nombre_municipio?.value || formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
             };
             
-            console.log('Es una edición');
-            console.log('Form data:', normalizedFormData);
+            console.log('Es una edición', formData);
+            console.log('Form data normalized:', normalizedFormData);
             
             ({ data, error } = await supabase
                 .from('Municipio')
