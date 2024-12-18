@@ -106,7 +106,7 @@ function App() {
           }
         }
           break;
-        case 'tickets':
+        case 'fines':
           console.log('Submitting tickets info:');
           break;
           case 'housing':{

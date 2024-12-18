@@ -40,7 +40,7 @@ const AppRoutes = () => (
       <Route path="/company-list" element={<CompanyListPage />} />
       <Route path="/housing-list" element={<HousingListPage />} />
       {/* Add routes for other sections */}
-      <Route path="/fines-forms" element={<TicketPage />} />
+      <Route path="/ticket-forms" element={<TicketPage />} />
       <Route path="/fines-list" element={<TicketListPage />} />
       <Route path="/family-forms" element={<FamilyPage />} />
       <Route path="/family-list" element={<FamilyListPage />} />

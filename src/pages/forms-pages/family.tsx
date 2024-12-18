@@ -8,6 +8,7 @@ import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const FamilyPage = () => {
     const [formData, setFormData] = useState<Familia>({} as Familia);
@@ -95,7 +96,7 @@ const FamilyPage = () => {
                 console.error('Error saving family data:', error);
                 setPopupMessage('Error al guardar datos de la familia');
             } else {
-                setPopupMessage('Datos de la familia guardados exitosamente');
+                setPopupMessage('Datos de la familia guardados con éxito');
                 setShowPopup(true);
                 setFormData({} as Familia);
 
@@ -118,6 +119,7 @@ const FamilyPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"family"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <h1 className="text-2xl font-bold mb-6">
