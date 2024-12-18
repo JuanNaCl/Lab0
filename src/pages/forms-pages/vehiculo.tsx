@@ -67,9 +67,7 @@ const VehiclePage = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form data ready for submission:', formData);
 
-            const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
             const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
-
             let data, error;
             if (editId) {
                 // Update existing record
@@ -79,7 +77,7 @@ const VehiclePage = () => {
                     .update({
                         nombre: formData.nombre,
                         marca: formData.marca,
-                        tipo: formData.tipo,
+                        tipo: formData.tipo.value,
                         color: formData.color,
                         valor_nuevo: valor_nuevo,
                         placa: formData.placa,
@@ -90,10 +88,10 @@ const VehiclePage = () => {
                 ({ data, error } = await supabase
                     .from('Vehiculo')
                     .insert([{
-                        id_dueño: id_dueño,
+                        id_dueño: formData.id_dueño.value,
                         nombre: formData.nombre,
                         marca: formData.marca,
-                        tipo: formData.tipo,
+                        tipo: formData.tipo.value,
                         color: formData.color,
                         valor_nuevo: valor_nuevo,
                         placa: formData.placa,
