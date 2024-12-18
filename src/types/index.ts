@@ -66,6 +66,12 @@ export interface Departamento extends BaseEntity {
 export interface Trabajo extends BaseEntity {
     nombre: string;
     media_salarial: number;
+    id_empresa: any;
+}
+
+export interface Aplicacion extends BaseEntity {
+    id_trabajo: any;
+    id_persona: any;
 }
 
 export interface Empresa extends BaseEntity {
