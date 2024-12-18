@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
 import supabase from '../../components/common/supabaseClient';
-import { Municipio } from '../../types';
+import { Departamento } from '../../types';
 import { IconButton } from 'rsuite';
 import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
@@ -11,26 +11,26 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from '../../components/common/NavbarNueva';
 
-const LocationListPage = () => {
-    const [municipios, setMunicipios] = useState<Municipio[]>([]);
+const DepartamentoListPage = () => {
+    const [Departamentos, setDepartamentos] = useState<Departamento[]>([]);
     const [personas, setPersonas] = useState<{ id: number; nombre: string }[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchMunicipios();
+        fetchDepartamentos();
         fetchPersonas();
     }, []);
 
-    const fetchMunicipios = async () => {
+    const fetchDepartamentos = async () => {
         const { data, error } = await supabase
-            .from('Municipio')
+            .from('Departamento')
             .select('*')
-            .not('id_alcalde', 'is', null);
+            .not('id_gobernador', 'is', null);
 
         if (error) {
-            console.error("Error fetching Municipios:", error);
+            console.error("Error fetching Departamentos:", error);
         } else {
-            setMunicipios(data);
+            setDepartamentos(data);
         }
     };
 
@@ -51,39 +51,37 @@ const LocationListPage = () => {
         }
     };
 
-    // Función para obtener el nombre del alcalde por id
-    const getNombreAlcalde = (id_alcalde: number) => {
-        const alcalde = personas.find(persona => persona.id === id_alcalde);
-        return alcalde ? alcalde.nombre : 'N/A';
+    // Función para obtener el nombre del gobernador por id
+    const getNombreGobernador = (id_gobernador: number) => {
+        const gobernador = personas.find(persona => persona.id === id_gobernador);
+        return gobernador ? gobernador.nombre : 'N/A';
     };
 
     const handleDelete = async (id: number) => {
         const { error } = await supabase
-            .from('Municipio')
+            .from('Departamento')
             .update({ 
-                id_alcalde: null,
-                area_total: null,
-                habitantes_censo_2023: null 
+                id_gobernador: null,
             })
             .eq('id', id)
             .select();
 
         if (error) {
-            console.error('Error deleting Municipio:', error);
+            console.error('Error deleting Departamento:', error);
         } else {
-            setMunicipios(municipios.filter(municipio => municipio.id !== id));
+            setDepartamentos(Departamentos.filter(Departamento => Departamento.id !== id));
         }
     };
 
     return (
         <div className="min-h-screen bg-emerald-50">
-            <Navbar activeSection={"location"} />
+            <Navbar activeSection={"departamento"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-2xl font-bold">Municipios</h1>
+                        <h1 className="text-2xl font-bold">Departamentos</h1>
                         <button
-                            onClick={() => navigate('/location-forms')}
+                            onClick={() => navigate('/departamento-forms')}
                             className="flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform hover:bg-emerald-600 hover:scale-105"
                         >
                             Crear
@@ -91,21 +89,21 @@ const LocationListPage = () => {
                     </div>
                     {/* Contenedor responsivo */}
                     <div className="overflow-x-auto">
-                        <Table data={municipios} autoHeight shouldUpdateScroll>
+                        <Table data={Departamentos} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
                                 <HeaderCell>Codigo DANE</HeaderCell>
-                                <Cell dataKey="codigo_municipio" />
+                                <Cell dataKey="codigo_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre municipio</HeaderCell>
-                                <Cell dataKey="nombre_municipio" />
+                                <HeaderCell>Nombre Departamento</HeaderCell>
+                                <Cell dataKey="nombre_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre alcalde</HeaderCell>
+                                <HeaderCell>Nombre gobernador</HeaderCell>
                                 <Cell>
-                                    {rowData => getNombreAlcalde(rowData.id_alcalde)}
+                                    {rowData => getNombreGobernador(rowData.id_gobernador)}
                                 </Cell>
                             </Column>
 
@@ -118,7 +116,7 @@ const LocationListPage = () => {
                                                 icon={<EditIcon style={{ color: 'green' }} />}
                                                 appearance="primary"
                                                 size="xs"
-                                                onClick={() => navigate(`/location-forms?edit=${rowData.id}`)}
+                                                onClick={() => navigate(`/departamento-forms?edit=${rowData.id}`)}
                                                 className="mr-2"
                                             />
                                             <IconButton
@@ -140,4 +138,4 @@ const LocationListPage = () => {
     );
 };
 
-export default LocationListPage;
+export default DepartamentoListPage;
