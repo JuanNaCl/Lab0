@@ -286,6 +286,26 @@ export const validateForm = (data: any, section: string) => {
                 }
             }
             break;
+        case 'family': {
+                const familyRequiredFields = {
+                    nombre_familia: 'El nombre de la familia es requerido',
+                    id_persona: 'La persona asociada es requerida',
+                };
+            
+                // Validar campos requeridos
+                Object.entries(familyRequiredFields).forEach(([field, message]) => {
+                    if (!data[field]) {
+                        errors[field] = message;
+                    }
+                });
+            
+                // Validar longitud mínima para nombre de la familia
+                if (data.nombre_familia && data.nombre_familia.trim().length < 3) {
+                    errors.nombre_familia = 'El nombre de la familia debe tener al menos 3 caracteres';
+                }
+                break;
+            }
+            
             
         default:
             break;

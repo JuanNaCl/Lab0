@@ -147,7 +147,7 @@ const TicketPage = () => {
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 2500,
+                        autoClose: 1600,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -156,7 +156,7 @@ const TicketPage = () => {
                     });
                     setTimeout(() => {
                     navigate('/fines-list');
-                    }, 2500); // Delay to allow the toast to be visible
+                    }, 2000); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {

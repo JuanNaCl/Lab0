@@ -78,7 +78,7 @@ const FamilyListPage = () => {
                                 <HeaderCell>Nombre del Integrante</HeaderCell>
                                 <Cell>
                                     {rowData => rowData.Persona
-                                        ? `${rowData.Persona.primer_nombre} ${rowData.Persona.segundo_nombre || ''} ${rowData.Persona.primer_apellido} ${rowData.Persona.segundo_apellido}`
+                                        ? `${rowData.Persona.primer_nombre} ${rowData.Persona.segundo_nombre || ''} ${rowData.Persona.primer_apellido} ${rowData.Persona.segundo_apellido || ''}`
                                         : 'Sin datos'}
                                 </Cell>
                             </Column>

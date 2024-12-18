@@ -56,7 +56,7 @@ const FamilyPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'families');
+        const validationErrors = validateForm(formData, 'family');
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             setIsSubmitting(false);
@@ -97,25 +97,29 @@ const FamilyPage = () => {
                 setPopupMessage('Error al guardar datos de la familia');
             } else {
                 setPopupMessage('Datos de la familia guardados con éxito');
-                setShowPopup(false);
+                setPopupMessage('Familia guardada exitosamente.');
                 setFormData({} as Familia);
+                setShowPopup(true);
 
-                toast.success(
-                    <>
-                        Actualización Exitosa.<br />Sera redirigido en breve.
-                    </>, {
-                    position: "top-right",
-                    autoClose: 2500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-
-                setTimeout(() => {
+                if (editId) {
+                    console.log('es una edicion y se redirige');
+                    setShowPopup(false);
+                    toast.success(
+                        <>
+                            Actualización Exitosa.<br />Sera redirigido en breve.
+                        </>, {
+                        position: "top-right",
+                        autoClose: 1600,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setTimeout(() => {
                     navigate('/family-list');
-                }, 2500);
+                    }, 2000); 
+                }
             }
         } catch (error) {
             console.error('Error submitting form:', error);
