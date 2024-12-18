@@ -57,7 +57,7 @@ export const validateForm = (data: any, section: string) => {
             break;
 
         case 'vehicles':
-            const vehicleRequiredFields = {
+            { const vehicleRequiredFields = {
                 nombre: 'Nombre es requerido',
                 marca: 'Marca es requerida',
                 tipo: 'Tipo es requerido',
@@ -71,11 +71,28 @@ export const validateForm = (data: any, section: string) => {
                 }
             });
 
+            // Validación de placas
+            const placaRegexAuto = /^[A-Z]{3}\d{3}$/; // Autos: Tres letras y tres números
+            const placaRegexMoto = /^[A-Z]{3}\d{2}[A-Z]$/; // Motos: Tres letras, dos números y una letra
+
+            if (data.placa) {
+                const placa = data.placa.toUpperCase(); // Convertir a mayúsculas
+                console.log('Placa ingresada:', data.placa);
+                console.log('Validación Auto:', /^[A-Z]{3}\d{3}$/.test(data.placa));
+                console.log('Validación Moto:', /^[A-Z]{3}\d{2}[A-Z]$/.test(data.placa));
+
+                if (!placaRegexAuto.test(placa) && !placaRegexMoto.test(placa)) {
+                    errors.placa =
+                'La placa no es válida. Use "LLLNNN" para autos o "LLLNNL" para motos.';
+                }
+            }
+
             // Optional: Validate valor_nuevo if it exists
             if (data.valor_nuevo && (isNaN(data.valor_nuevo) || data.valor_nuevo < 0)) {
                 errors.valor_nuevo = 'Valor nuevo debe ser un número positivo';
             }
-            break;
+            break; 
+        }
 
         case 'company':
             const companyRequiredFields = {
