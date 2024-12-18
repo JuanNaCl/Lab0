@@ -6,7 +6,7 @@ import { Save } from 'lucide-react';
 import { Familia } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from '../../components/common/NavbarNueva';
 
@@ -97,17 +97,25 @@ const FamilyPage = () => {
                 setPopupMessage('Error al guardar datos de la familia');
             } else {
                 setPopupMessage('Datos de la familia guardados con éxito');
-                setShowPopup(true);
+                setShowPopup(false);
                 setFormData({} as Familia);
 
-                toast.success('Operación exitosa. Redirigiendo...', {
-                    position: 'top-right',
-                    autoClose: 3000,
+                toast.success(
+                    <>
+                        Actualización Exitosa.<br />Sera redirigido en breve.
+                    </>, {
+                    position: "top-right",
+                    autoClose: 2500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 });
 
                 setTimeout(() => {
                     navigate('/family-list');
-                }, 3000);
+                }, 2500);
             }
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -149,6 +157,7 @@ const FamilyPage = () => {
                 </div>
             </main>
             <Popup message={popupMessage} show={showPopup} onClose={() => setShowPopup(false)} />
+            <ToastContainer />
         </div>
     );
 };

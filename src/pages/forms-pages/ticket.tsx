@@ -6,7 +6,7 @@ import { Save } from 'lucide-react';
 import { Comparendo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from '../../components/common/NavbarNueva';
 
@@ -140,8 +140,23 @@ const TicketPage = () => {
                 setShowPopup(true);
 
                 if (editId) {
-                    toast.success('Actualización exitosa. Será redirigido.', { autoClose: 3500 });
-                    setTimeout(() => navigate('/ticket-list'), 1000);
+                    console.log('es una edicion y se redirige');
+                    setShowPopup(false);
+                    toast.success(
+                        <>
+                            Actualización Exitosa.<br />Sera redirigido en breve.
+                        </>, {
+                        position: "top-right",
+                        autoClose: 2500,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setTimeout(() => {
+                    navigate('/fines-list');
+                    }, 2500); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -183,6 +198,7 @@ const TicketPage = () => {
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
             />
+            <ToastContainer />
         </div>
     );
 };
