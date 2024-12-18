@@ -9,7 +9,7 @@ import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Navbar } from '../../components/NavbarNueva';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const PersonalListPage = () => {
   const [personas, setPersonas] = useState<PersonalInfo[]>([]);

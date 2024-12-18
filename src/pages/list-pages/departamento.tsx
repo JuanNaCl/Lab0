@@ -9,7 +9,7 @@ import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Navbar } from '../../components/NavbarNueva';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const DepartamentoListPage = () => {
     const [Departamentos, setDepartamentos] = useState<Departamento[]>([]);
