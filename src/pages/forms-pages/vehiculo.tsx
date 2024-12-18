@@ -8,6 +8,7 @@ import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 
 const VehiclePage = () => {
@@ -138,6 +139,7 @@ const VehiclePage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"vehiculo"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">

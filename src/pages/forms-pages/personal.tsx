@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Save } from 'lucide-react';
 import { Navbar } from '../../components/common/NavbarNueva';
 
-
 const Personal = () => {
     const [formData, setFormData] = useState<PersonalInfo>({} as PersonalInfo);
     const [errors, setErrors] = useState<Record<string, string>>({});
