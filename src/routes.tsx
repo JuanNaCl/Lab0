@@ -7,6 +7,7 @@ import WorkListPage from './pages/list-pages/trabajo-list';
 import VehiclesListPage from './pages/list-pages/vehiculo-list';
 import LocationListPage from './pages/list-pages/location-list';
 import LocationPage from './pages/forms-pages/location';
+import WorkApplyPage from './pages/forms-pages/work-apply';
 import DepartamentoListPage from './pages/list-pages/departamento';
 import DepartamentoPage from './pages/forms-pages/departamento';
 import AppNueva from './AppNueva';
@@ -19,6 +20,7 @@ const AppRoutes = () => (
       <Route path="/personal-list" element={<PersonalListPage />} />
       <Route path="/work-forms" element={<TrabajoPage />} />
       <Route path="/work-list" element={<WorkListPage />} />
+      <Route path="/work-apply" element={<WorkApplyPage />} />
       <Route path="/vehiculo-forms" element={<VehiclePage />} />
       <Route path="/vehiculo-list" element={<VehiclesListPage />} />
       <Route path="/location-forms" element={<LocationPage />} />
