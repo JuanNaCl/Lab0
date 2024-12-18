@@ -4,7 +4,7 @@ import { validateForm } from '../../utils/validation';
 import { Municipio } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LocationForm } from '../../components/forms/LocationForm';
 
@@ -74,7 +74,7 @@ const LocationPage = () => {
                 id_alcalde: formData.id_alcalde?.value || formData.id_alcalde, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
                 area_total: formData.area_total,
                 habitantes_censo_2023: formData.habitantes_censo_2023,
-                nombre_municipio: formData.nombre_municipio?.value || formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_municipio: formData.nombre_municipio.value ? formData.nombre_municipio.value : formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
             };
             
             console.log('Es una edición', formData);
@@ -105,15 +105,16 @@ const LocationPage = () => {
                 setPopupMessage('Datos del municipio guardados exitosamente');
                 setFormData({} as Municipio); // Reset form data
                 setShowPopup(true);
+
                 if (editId) {
-                    console.log('es una edicion y se redirige');
                     setShowPopup(false);
+                    console.log('Actualización Exitosa');
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 3500,
+                        autoClose: 2800,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -122,7 +123,7 @@ const LocationPage = () => {
                     });
                     setTimeout(() => {
                         navigate('/location-list');
-                    }, 1000); // Delay to allow the toast to be visible
+                    }, 2800); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -161,6 +162,7 @@ const LocationPage = () => {
                 show={showPopup}
                 onClose={() => setShowPopup(false)}
             />
+            <ToastContainer />
         </div>
     );
 };
