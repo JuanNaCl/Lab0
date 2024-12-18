@@ -66,6 +66,7 @@ const TrabajoPage = () => {
             console.log('Form data ready for submission:', formData);
 
             let data, error;
+            const id_empresa = parseInt(formData.id_empresa!.toString(), 10);
             if (editId) {
                 // Update existing record
                 ({ data, error } = await supabase
@@ -73,7 +74,7 @@ const TrabajoPage = () => {
                     .update([{
                         nombre: formData.nombre,
                         media_salarial: formData.media_salarial,
-                        id_empresa: parseInt(formData.id_empresa.value),
+                        id_empresa: formData.id_empresa?.value || formData.id_empresa,
                     }])
                     .eq('id', editId)
                     .select());
