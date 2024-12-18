@@ -69,7 +69,11 @@ const TrabajoPage = () => {
                 // Update existing record
                 ({ data, error } = await supabase
                     .from('Trabajo')
-                    .update([formData])
+                    .update([{
+                        nombre: formData.nombre,
+                        media_salarial: formData.media_salarial,
+                        id_empresa: parseInt(formData.id_empresa.value),
+                    }])
                     .eq('id', editId)
                     .select());
             } else {
@@ -79,6 +83,7 @@ const TrabajoPage = () => {
                     .insert([{
                         nombre: formData.nombre,
                         media_salarial: formData.media_salarial,
+                        id_empresa: parseInt(formData.id_empresa.value),
                     }])
                     .select());
             }
@@ -99,7 +104,7 @@ const TrabajoPage = () => {
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 2750,
+                        autoClose: 1800,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -108,7 +113,7 @@ const TrabajoPage = () => {
                     });
                     setTimeout(() => {
                         navigate('/work-list');
-                    }, 2800); // Delay to allow the toast to be visible
+                    }, 1850); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
