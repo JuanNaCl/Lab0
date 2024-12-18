@@ -64,13 +64,13 @@ const FamilyPage = () => {
         }
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simula un pequeño retraso
+            await new Promise(resolve => setTimeout(resolve, 1000)); 
             console.log('Form data ready for submission:', formData);
         
-            const id_persona = parseInt(formData.id_persona!.toString(), 10); // Conversión explícita
+            const id_persona = parseInt(formData.id_persona!.toString(), 10); 
             const es_cdf = formData.es_cdf ? true : false; // Asegura que es un booleano
         
-            let data, error; // Declaración de las variables
+            let data, error;
 
             if (editId) {
                 ({ data, error } = await supabase
@@ -91,7 +91,7 @@ const FamilyPage = () => {
                     es_cdf: formData.es_cdf,
                 }])
                 .select());
-}
+            }
 
             if (error) {
                 console.error('Error saving family data:', error);

@@ -10,6 +10,8 @@ import LocationListPage from './pages/list-pages/location-list';
 import LocationPage from './pages/forms-pages/location';
 import TicketPage from './pages/forms-pages/ticket'
 import TicketListPage from './pages/list-pages/ticket-list'
+import FamilyPage from './pages/forms-pages/family'
+import FamilyListPage from './pages/list-pages/family-list'
 
 const AppRoutes = () => (
   <Router>
@@ -26,6 +28,8 @@ const AppRoutes = () => (
       {/* Add routes for other sections */}
       <Route path="/ticket-forms" element={<TicketPage />} />
       <Route path="/ticket-list" element={<TicketListPage />} />
+      <Route path="/family-forms" element={<FamilyPage />} />
+      <Route path="/family-list" element={<FamilyListPage />} />
     </Routes>
   </Router>
 );

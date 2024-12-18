@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   UserCircle2, Car, FileWarning, Home, 
-  MapPin, Briefcase, Building, ClipboardType, Menu
+  MapPin, Briefcase, Building, ClipboardType, Menu, Heart
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -42,6 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection, onSectionChange }
     { id: 'departament', label: 'Departamento', icon: <ClipboardType className="w-5 h-5" /> },
     { id: 'work', label: 'Trabajo', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'company', label: 'Empresa', icon: <Building className="w-5 h-5" /> },
+    { id: 'family', label: 'Familia', icon: <Heart className="w-5 h-5" /> }
   ];
 
   return (
