@@ -18,6 +18,10 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     activeSection,
 }) => {
     if (activeSection !== 'personal') return null;  
+    const tipoOptions = [
+        { value: 1, label: 'Masculino' },
+        { value: 2, label: 'Femenino' },
+    ];
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -26,6 +30,7 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
+    const selectedTipoOption = tipoOptions.find((option) => option.value === Number(data.sexo));
     return (
         <div className="space-y-4 animate-fadeIn">
             <h2 className="text-2xl font-semibold mb-6 text-emerald-800">Información Personal</h2>
@@ -85,7 +90,7 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
                 <FormSelect
                     label="Sexo"
                     name="sexo"
-                    value={data.sexo ? { value: data.sexo.value, label: data.sexo.label } : ''}
+                    value={selectedTipoOption}
                     options={[{ value: 1, label: 'Masculino' }, { value: 2, label: 'Femenino' }]}
                     onChange={onChange}
                     error={errors.sexo}

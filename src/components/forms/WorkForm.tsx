@@ -15,9 +15,8 @@ export const WorkForm: React.FC<WorkFormProps> = ({
     data,
     errors,
     onChange,
-    activeSection,
 }) => {
-    const [empresas, setEmpresas] = useState<Empresa[]>([]);
+    const [empresas, setEmpresas] = useState<{ value: number; label: string }[]>([]);
 
     useEffect(() => {
         const fetchEmpresas = async () => {
@@ -26,16 +25,19 @@ export const WorkForm: React.FC<WorkFormProps> = ({
                 .select('*');
             if (error) {
                 console.error('Error fetching empresas:', error);
-            } else {
-                setEmpresas(data);
+            }else if (data?.length === 0) {
+                console.error('No Company found');
+            }else {
+                const formattedOptions = data!.map((company) => ({
+                    value: company.id!,
+                    label: `${company.nombre}`,
+                }));
+                setEmpresas(formattedOptions);
             }
         };
 
         fetchEmpresas();
     }, []);
-
-    if (activeSection !== 'work') return null;
-    const empresaName = empresas.find(empresa => empresa.id === data.id_empresa)?.nombre;
 
     return (
         <div className="space-y-4">
@@ -44,12 +46,9 @@ export const WorkForm: React.FC<WorkFormProps> = ({
                 <FormSelect
                     label="Empresa ofertante"
                     name="id_empresa"
-                    value={data.id_empresa || ''}
+                    value={empresas.find((option) => option.value === data.id_empresa)}
+                    options={empresas}
                     onChange={onChange}
-                    options={empresas.map(empresa => ({
-                        value: empresa.id!,
-                        label: empresa.nombre,
-                    }))}
                     error={errors.id_empresa}
                     required
                 />

@@ -33,7 +33,9 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
     }, []);
 
     const fetchPersonas = async () => {
-        let { data: Persona, error } = await supabase.from('Persona').select('*');
+        const { data: Persona, error } = await supabase
+            .from('Persona')
+            .select('*');
         if (error) {
             console.error('Error fetching Personas:', error);
         } else if (Persona?.length === 0) {
