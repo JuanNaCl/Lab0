@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { WorkApplyForm } from '../../components/forms/WorkApplyForm';
 import { validateForm } from '../../utils/validation';
-import { Aplicacion, PersonalInfo, Trabajo } from '../../types';
+import { Aplicacion, Trabajo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { ToastContainer, toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const WorkApplyPage = () => {
     const applyId = searchParams.get('apply');
     const [aplicaciones, setAplicaciones] = useState<Aplicacion[]>([]);
     const [trabajo, setTrabajo] = useState<Trabajo | null>(null);
-
+    const navigate = useNavigate();
     const fetchAplicaciones = async (id: string) => {
         const { data, error } = await supabase
             .from('Persona_Trabajo')
@@ -120,6 +120,7 @@ const WorkApplyPage = () => {
             setPopupMessage('Ocurrió un error al guardar');
         } finally {
             setIsSubmitting(false);
+            navigate(0);
         }
     };
 
