@@ -35,6 +35,7 @@ export const WorkForm: React.FC<WorkFormProps> = ({
     }, []);
 
     if (activeSection !== 'work') return null;
+    const empresaName = empresas.find(empresa => empresa.id === data.id_empresa)?.nombre;
 
     return (
         <div className="space-y-4">
@@ -43,7 +44,7 @@ export const WorkForm: React.FC<WorkFormProps> = ({
                 <FormSelect
                     label="Empresa ofertante"
                     name="id_empresa"
-                    value={data.id_empresa}
+                    value={data.id_empresa || ''}
                     onChange={onChange}
                     options={empresas.map(empresa => ({
                         value: empresa.id!,

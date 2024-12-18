@@ -8,6 +8,7 @@ import { Popup } from '../../components/common/popUp';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Save } from 'lucide-react';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const TrabajoPage = () => {
     const [formData, setFormData] = useState<Trabajo>({} as Trabajo);
@@ -126,6 +127,7 @@ const TrabajoPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"work"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -152,7 +154,10 @@ const TrabajoPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false);
+                    navigate(0);
+                }}
             />
             <ToastContainer />
         </div>
