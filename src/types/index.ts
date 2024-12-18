@@ -37,7 +37,7 @@ export interface Comparendo extends BaseEntity {
 }
 
 export interface Vivienda extends BaseEntity {
-    id_municipio: number;
+    id_municipio: any;
     direccion: string;
     barrio: string;
     pisos: number;
@@ -46,8 +46,14 @@ export interface Vivienda extends BaseEntity {
     habitaciones: number;
     baños: number;
     estrato: number;
-    tipo: string;
+    tipo: any;
 }
+
+export interface Persona_Vivienda extends BaseEntity {
+    id_persona: any;
+    id_vivienda: number;
+    es_dueño: boolean;
+} 
 
 export interface Municipio extends BaseEntity {
     id_alcalde: any;
@@ -76,7 +82,7 @@ export interface Aplicacion extends BaseEntity {
 
 export interface Empresa extends BaseEntity {
     nombre: string;
-    id_departamento_constitucion: number;
+    id_departamento_constitucion: any;
 }
 
 export interface Familia extends BaseEntity {
