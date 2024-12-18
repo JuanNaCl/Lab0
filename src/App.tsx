@@ -15,7 +15,7 @@ import {
 } from './types';
 import supabase from './components/common/supabaseClient';
 import { Popup } from './components/common/popUp';
-import { DepartamentForm } from './components/forms/Departamento';
+import { DepartamentForm } from './components/forms/DepartamentoForm';
 
 function App() {
   const [activeSection, setActiveSection] = useState('personal');
