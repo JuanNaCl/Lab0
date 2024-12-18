@@ -226,7 +226,6 @@ function App() {
               departamentoData={formData.departament}
               errors={errors}
               onChange={handleChange}
-              activeSection={activeSection}
             />
             <WorkForm
               data={formData.work}

@@ -9,6 +9,7 @@ import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const LocationListPage = () => {
     const [municipios, setMunicipios] = useState<Municipio[]>([]);
@@ -76,6 +77,7 @@ const LocationListPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"location"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
