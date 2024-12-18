@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { VehicleForm } from '../../components/forms/VehicleForm';
 import { validateForm } from '../../utils/validation';
-import { Save } from 'lucide-react';
-import { Vehiculo } from '../../types';
+import { Departamento } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DepartamentForm } from '../../components/forms/DepartamentoForm';
 
 
-const VehiclePage = () => {
-    const [formData, setFormData] = useState<Vehiculo>({} as Vehiculo);
+const DepartamentoPage = () => {
+    const [formData, setFormData] = useState<Departamento>({} as Departamento);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -21,21 +20,21 @@ const VehiclePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchVehicleById = async (id: string) => {
+        const fetchDepartamentoById = async (id: string) => {
             const { data, error } = await supabase
-                .from('Vehiculo')
+                .from('Departamento')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching vehiculo:', error);
+                console.error('Error fetching Departamento:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchVehicleById(editId);
+            fetchDepartamentoById(editId);
         }
     }, [editId]);
 
@@ -54,63 +53,58 @@ const VehiclePage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'vehicles');
+        console.log('Form data:', formData);
+
+        const validationErrors = validateForm(formData, 'departamento');
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            console.error('Form validation errors:', validationErrors);
             setIsSubmitting(false);
             return;
         }
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('Form data ready for submission:', formData);
-
-            const id_dueño = parseInt(formData.id_dueño!.toString(), 10);
-            const valor_nuevo = formData.valor_nuevo ? parseInt(formData.valor_nuevo.toString(), 10) : null;
 
             let data, error;
-            if (editId) {
-                // Update existing record
-                console.log('es una edicion');
-                ({ data, error } = await supabase
-                    .from('Vehiculo')
-                    .update({
-                        nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
-                    })
-                    .eq('id', editId)
-                    .select());
+
+            // Normalizar los valores del formulario
+            const normalizedFormData = {
+                id_gobernador: typeof formData.id_gobernador === 'object' ? formData.id_gobernador?.value : formData.id_gobernador, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_Departamento: formData.nombre_departamento.value ? formData.nombre_departamento.value : formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+            };
+            
+            console.log('Es una edición', formData);
+            console.log('Form data normalized:', normalizedFormData);
+            
+            ({ data, error } = await supabase
+                .from('Departamento')
+                .update({
+                    id_gobernador: normalizedFormData.id_gobernador,
+                })
+                .eq('id', normalizedFormData.nombre_Departamento)
+                .select());
+            
+            if (error) {
+                console.error("Error updating Departamento:", error);
             } else {
-                ({ data, error } = await supabase
-                    .from('Vehiculo')
-                    .insert([{
-                        id_dueño: id_dueño,
-                        nombre: formData.nombre,
-                        marca: formData.marca,
-                        tipo: formData.tipo,
-                        color: formData.color,
-                        valor_nuevo: valor_nuevo,
-                        placa: formData.placa,
-                    }])
-                    .select());
+                console.log("Updated Departamento data:", data);
             }
+            
 
             if (error) {
-                console.error('Error inserting vehicle data:', error);
-                setPopupMessage('Error al guardar datos del vehículo');
+                console.error('Error inserting Departamento data:', error);
+                setPopupMessage('Error al guardar datos del Departamento');
             } else {
-                console.log('Vehicle data inserted successfully:', data);
-                setPopupMessage('Datos del vehículo guardados exitosamente');
-                setFormData({} as Vehiculo); // Reset form data
+                console.log('Departamento data inserted successfully:', data);
+                setPopupMessage('Datos del Departamento guardados exitosamente');
+                setFormData({} as Departamento); // Reset form data
                 setShowPopup(true);
+
                 if (editId) {
-                    console.log('es una edicion y se redirige');
                     setShowPopup(false);
+                    console.log('Actualización Exitosa');
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
@@ -124,7 +118,7 @@ const VehiclePage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate(-1);
+                        navigate('/departamento-list');
                     }, 2000); // Delay to allow the toast to be visible
                 }
             }
@@ -141,9 +135,8 @@ const VehiclePage = () => {
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <VehicleForm
-                            activeSection='vehicles'
-                            data={formData}
+                        <DepartamentForm
+                            departamentoData={formData}
                             errors={errors}
                             onChange={handleChange}
                         />
@@ -151,10 +144,8 @@ const VehiclePage = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
-                                    transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
                             >
-                                <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
                             </button>
                         </div>
@@ -167,7 +158,7 @@ const VehiclePage = () => {
                 onClose={() => {
                     setShowPopup(false)
                     navigate(-1);
-                }
+                    }
                 }
             />
             <ToastContainer />
@@ -175,4 +166,4 @@ const VehiclePage = () => {
     );
 };
 
-export default VehiclePage;
+export default DepartamentoPage;
