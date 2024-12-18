@@ -16,6 +16,7 @@ export const WorkApplyForm: React.FC<WorkApplyFormProps> = ({
     onChange,
     applyId,
 }) => {
+    // NO BORRAR FETCH TRABAJOS, NO SE USA PERO SE ROMPE SI SE BORRA
     const [trabajos, setTrabajos] = useState<Trabajo[]>([]);
     const [personas, setPersonas] = useState<PersonalInfo[]>([]);
 

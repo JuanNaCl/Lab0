@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Departamento } from '../../types';
 import supabase from '../common/supabaseClient';
 import { FormSelect } from '../common/FormSelect';
+import { RotateCcw } from 'lucide-react';
 
 interface DepartamentFormProps {
     departamentoData: Departamento;
@@ -111,12 +112,14 @@ export const DepartamentForm: React.FC<DepartamentFormProps> = ({
                     <h2 className="text-2xl font-semibold text-emerald-800">Información del Departamento</h2>
                     <button
                         type="button"
-                        className="px-4 py-2 text-emerald-800 rounded"
+                        className="flex items-center space-x-2 px-3 py-2 bg-emerald-300 text-white rounded-lg 
+                                    transition-all duration-200 transform "
                         onClick={() => {
                             fetchDepartamentos();
                             fetchPersonas();
                         }}>
-                        Actualizar
+                        <RotateCcw className="w-3.5 h-3.5 text-emerald-900" />
+                        <span className='text-emerald-900 text-sm'>Actualizar</span>
                     </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

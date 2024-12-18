@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormInput } from '../common/FormInput';
 import { PersonalInfo } from '../../types';
 import { FormSelect } from '../common/FormSelect';
@@ -17,8 +17,15 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     onChange,
     activeSection,
 }) => {
-    if (activeSection !== 'personal') return null;
+    if (activeSection !== 'personal') return null;  
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
     return (
         <div className="space-y-4 animate-fadeIn">
             <h2 className="text-2xl font-semibold mb-6 text-emerald-800">Información Personal</h2>
@@ -70,7 +77,7 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
                     label="Fecha de Nacimiento"
                     type="date"
                     name="fecha_nacimiento"
-                    value={data.fecha_nacimiento || ''}
+                    value={data.fecha_nacimiento ? formatDate(data.fecha_nacimiento) : ''}
                     onChange={onChange}
                     error={errors.fecha_nacimiento}
                     required
@@ -78,7 +85,7 @@ export const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
                 <FormSelect
                     label="Sexo"
                     name="sexo"
-                    value={data.sexo}
+                    value={data.sexo ? { value: data.sexo.value, label: data.sexo.label } : ''}
                     options={[{ value: 1, label: 'Masculino' }, { value: 2, label: 'Femenino' }]}
                     onChange={onChange}
                     error={errors.sexo}

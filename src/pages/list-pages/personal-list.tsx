@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
@@ -82,62 +82,64 @@ const PersonalListPage = () => {
               Crear
             </button>
           </div>
-          <Table data={personas} autoHeight>
-            <Column width={150} align="center" fixed>
-              <HeaderCell>Cedula</HeaderCell>
-              <Cell dataKey="cedula" />
-            </Column>
+          <div className='overflow-x-auto'>
+            <Table data={personas} autoHeight shouldUpdateScroll>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Cedula</b></HeaderCell>
+                <Cell dataKey="cedula" />
+              </Column>
 
-            <Column flexGrow={1} align="center">
-              <HeaderCell>Primer Nombre</HeaderCell>
-              <Cell dataKey="primer_nombre" />
-            </Column>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Primer Nombre</b></HeaderCell>
+                <Cell dataKey="primer_nombre" />
+              </Column>
 
-            <Column flexGrow={1} align="center">
-              <HeaderCell>Primer Apellido</HeaderCell>
-              <Cell dataKey="primer_apellido" />
-            </Column>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Primer Apellido</b></HeaderCell>
+                <Cell dataKey="primer_apellido" />
+              </Column>
 
-            <Column flexGrow={1} align="center">
-              <HeaderCell>Fecha de Nacimiento</HeaderCell>
-              <Cell>
-                {rowData => formatDate(rowData.fecha_nacimiento)}
-              </Cell>
-            </Column>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Fecha de Nacimiento</b></HeaderCell>
+                <Cell>
+                  {rowData => formatDate(rowData.fecha_nacimiento)}
+                </Cell>
+              </Column>
 
-            <Column flexGrow={1} align="center">
-              <HeaderCell>Email</HeaderCell>
-              <Cell dataKey="email" />
-            </Column>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Email</b></HeaderCell>
+                <Cell dataKey="email" />
+              </Column>
 
-            <Column flexGrow={1} align="center">
-              <HeaderCell>Celular</HeaderCell>
-              <Cell dataKey="celular" />
-            </Column>
+              <Column width={200} flexGrow={1} align="center" resizable>
+                <HeaderCell><b>Celular</b></HeaderCell>
+                <Cell dataKey="celular" />
+              </Column>
 
-            <Column width={150} align="center">
-              <HeaderCell>Acciones</HeaderCell>
-              <Cell>
-                {rowData => (
-                  <span>
-                    <IconButton
-                      icon={<EditIcon style={{ color: 'green' }} />}
-                      appearance="primary"
-                      size="xs"
-                      onClick={() => navigate(`/personal-forms?edit=${rowData.id}`)}
-                      className="mr-2"
-                    />
-                    <IconButton
-                      icon={<TrashIcon style={{ color: 'red' }} />}
-                      appearance="subtle"
-                      size="xs"
-                      onClick={() => handleDelete(rowData.id)}
-                    />
-                  </span>
-                )}
-              </Cell>
-            </Column>
-          </Table>
+              <Column width={200} align="center" resizable>
+                <HeaderCell><b>Acciones</b></HeaderCell>
+                <Cell>
+                  {rowData => (
+                    <span>
+                      <IconButton
+                        icon={<EditIcon style={{ color: 'green' }} />}
+                        appearance="primary"
+                        size="xs"
+                        onClick={() => navigate(`/personal-forms?edit=${rowData.id}`)}
+                        className="mr-2"
+                      />
+                      <IconButton
+                        icon={<TrashIcon style={{ color: 'red' }} />}
+                        appearance="subtle"
+                        size="xs"
+                        onClick={() => handleDelete(rowData.id)}
+                      />
+                    </span>
+                  )}
+                </Cell>
+              </Column>
+            </Table>
+          </div>
         </div>
       </main>
       <ToastContainer />

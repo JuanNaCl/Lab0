@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { WorkApplyForm } from '../../components/forms/WorkApplyForm';
 import { validateForm } from '../../utils/validation';
 import { Aplicacion, PersonalInfo, Trabajo } from '../../types';
@@ -11,6 +12,7 @@ import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import { IconButton } from 'rsuite';
 import TrashIcon from '@rsuite/icons/Trash';
 import { Save } from 'lucide-react';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const WorkApplyPage = () => {
     const [formData, setFormData] = useState<Aplicacion>({} as Aplicacion);
@@ -22,6 +24,7 @@ const WorkApplyPage = () => {
     const applyId = searchParams.get('apply');
     const [aplicaciones, setAplicaciones] = useState<Aplicacion[]>([]);
     const [trabajo, setTrabajo] = useState<Trabajo | null>(null);
+    const navigate = useNavigate();
 
     const fetchAplicaciones = async (id: string) => {
         const { data, error } = await supabase
@@ -104,15 +107,8 @@ const WorkApplyPage = () => {
             } else {
                 console.log('Aplicacion info saved successfully:', data);
                 setFormData({} as Aplicacion); // Reset form data
-                toast.success('Datos de la Aplicación guardados exitosamente', {
-                    position: "top-right",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                setPopupMessage('Datos de la Aplicación guardados exitosamente');
+                setShowPopup(true);
                 fetchAplicaciones(applyId!); // Refresh the list of applications
             }
         } catch (error) {
@@ -141,23 +137,17 @@ const WorkApplyPage = () => {
             });
         } else {
             setAplicaciones(aplicaciones.filter(aplicacion => aplicacion.id !== id));
-            toast.success('Aplicación eliminada correctamente', {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            setPopupMessage('Datos de la Aplicación eliminados exitosamente');
+            setShowPopup(true);
         }
     };
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"work"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
-                    <h1 className="text-2xl font-bold mb-4">Aplicar a Trabajo: {trabajo?.nombre}</h1>
+                    <h1 className="text-2xl font-bold mb-4">{trabajo?.nombre}</h1>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <WorkApplyForm
                             applyId= {applyId!}
@@ -178,33 +168,33 @@ const WorkApplyPage = () => {
                         </div>
                     </form>
                 </div>
-                <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
+                <div className="bg-white rounded-lg shadow-lg p-6 mt-6 relative z-0">
                     <h2 className="text-xl font-semibold mb-4">Personas que han Aplicado</h2>
                     <Table data={aplicaciones} autoHeight>
                         <Column flexGrow={1} align="center">
-                            <HeaderCell>Nombre</HeaderCell>
+                            <HeaderCell><b>Nombre</b></HeaderCell>
                             <Cell>
-                                {rowData => `${rowData.Persona.primer_nombre} ${rowData.Persona.primer_apellido}`}
+                                {rowData => `${rowData.Persona.primer_nombre} ${rowData.Persona.segundo_nombre}`}
                             </Cell>
                         </Column>
                         <Column flexGrow={1} align="center">
-                            <HeaderCell>Apellidos</HeaderCell>
+                            <HeaderCell><b>Apellidos</b></HeaderCell>
                             <Cell>
                                 {rowData => `${rowData.Persona.primer_apellido ?? ''} ${rowData.Persona.segundo_apellido ?? ''}`}
                             </Cell>
                         </Column>
                         <Column flexGrow={1} align="center">
-                            <HeaderCell>Cédula de la Persona</HeaderCell>
+                            <HeaderCell><b>Cédula de la Persona</b></HeaderCell>
                             <Cell dataKey="Persona.cedula" />
                         </Column>
                         <Column flexGrow={1} align="center">
-                            <HeaderCell>Fecha Aplicacion</HeaderCell>
+                            <HeaderCell><b>Fecha Aplicacion</b></HeaderCell>
                             <Cell>
                                 {rowData => new Date(rowData.created_at).toLocaleDateString()}
                             </Cell>
                         </Column>
                         <Column flexGrow={1} align="center">
-                            <HeaderCell>Acciones</HeaderCell>
+                            <HeaderCell><b>Acciones</b></HeaderCell>
                             <Cell>
                                 {rowData => (
                                     <IconButton
@@ -222,7 +212,10 @@ const WorkApplyPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false);
+                    navigate(0);
+                }}
             />
             <ToastContainer />
         </div>
