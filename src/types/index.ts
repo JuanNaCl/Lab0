@@ -72,3 +72,10 @@ export interface Empresa extends BaseEntity {
     nombre: string;
     id_departamento_constitucion: number;
 }
+
+export interface Familia extends BaseEntity {
+    fecha_registro: string;
+    id_persona: number;
+    nombre_familia: string;
+    es_cdf: boolean
+}
