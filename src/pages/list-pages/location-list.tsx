@@ -93,24 +93,24 @@ const LocationListPage = () => {
                     <div className="overflow-x-auto">
                         <Table data={municipios} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Codigo DANE</HeaderCell>
+                                <HeaderCell><b>Codigo DANE</b></HeaderCell>
                                 <Cell dataKey="codigo_municipio" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre municipio</HeaderCell>
+                                <HeaderCell><b>Nombre municipio</b></HeaderCell>
                                 <Cell dataKey="nombre_municipio" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre alcalde</HeaderCell>
+                                <HeaderCell><b>Nombre alcalde</b></HeaderCell>
                                 <Cell>
                                     {rowData => getNombreAlcalde(rowData.id_alcalde)}
                                 </Cell>
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Acciones</HeaderCell>
+                                <HeaderCell><b>Acciones</b></HeaderCell>
                                 <Cell>
                                     {rowData => (
                                         <span>

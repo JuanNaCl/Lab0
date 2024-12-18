@@ -91,24 +91,24 @@ const DepartamentoListPage = () => {
                     <div className="overflow-x-auto">
                         <Table data={Departamentos} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Codigo DANE</HeaderCell>
+                                <HeaderCell><b>Codigo DANE</b></HeaderCell>
                                 <Cell dataKey="codigo_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre Departamento</HeaderCell>
+                                <HeaderCell><b>Nombre Departamento</b></HeaderCell>
                                 <Cell dataKey="nombre_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre gobernador</HeaderCell>
+                                <HeaderCell><b>Nombre gobernador</b></HeaderCell>
                                 <Cell>
                                     {rowData => getNombreGobernador(rowData.id_gobernador)}
                                 </Cell>
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Acciones</HeaderCell>
+                                <HeaderCell><b>Acciones</b></HeaderCell>
                                 <Cell>
                                     {rowData => (
                                         <span>

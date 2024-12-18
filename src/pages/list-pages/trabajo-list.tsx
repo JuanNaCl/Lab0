@@ -45,29 +45,44 @@ const WorkListPage = () => {
     }, []);
 
     const handleDelete = async (id: number) => {
-        const { error } = await supabase
-            .from('Trabajo')
-            .delete()
-            .eq('id', id);
-        if (error) {
-            console.error('Error deleting trabajo:', error);
-            toast.error(
-                <>
-                    Error al eliminar el Trabajo.<br />Este trabajo está siendo referenciado en otra tabla.
-                </>, {
+        try {
+            // Eliminar registros en la tabla Persona_Trabajo
+            const { error: deletePersonaTrabajoError } = await supabase
+                .from('Persona_Trabajo')
+                .delete()
+                .eq('id_trabajo', id);
+            if (deletePersonaTrabajoError) {
+                throw deletePersonaTrabajoError;
+            }
+    
+            // Eliminar el trabajo
+            const { error: deleteTrabajoError } = await supabase
+                .from('Trabajo')
+                .delete()
+                .eq('id', id);
+            if (deleteTrabajoError) {
+                throw deleteTrabajoError;
+            }
+    
+            // Actualizar el estado local
+            setTrabajos(trabajos.filter(trabajo => trabajo.id !== id));
+            toast.success('Trabajo y Aplicaciones asociadas eliminadas correctamente', {
                 position: "top-right",
-                autoClose: 2500,
+                autoClose: 2250,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
             });
-        } else {
-            setTrabajos(trabajos.filter(trabajo => trabajo.id !== id));
-            toast.success('Trabajo eliminado correctamente', {
+        } catch (error) {
+            console.error('Error deleting trabajo:', error);
+            toast.error(
+                <>
+                    Error al eliminar el Trabajo.
+                </>, {
                 position: "top-right",
-                autoClose: 2500,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -96,61 +111,63 @@ const WorkListPage = () => {
                             Crear
                         </button>
                     </div>
-                    <Table data={trabajos} autoHeight>
-                        <Column flexGrow={1} align="center" fixed>
-                            <HeaderCell>ID</HeaderCell>
-                            <Cell dataKey="id" />
-                        </Column>
+                    <div className='overflow-x-auto'>
+                        <Table data={trabajos} autoHeight shouldUpdateScroll>
+                            <Column width={200} flexGrow={1} align="center" resizable>
+                                <HeaderCell><b>ID</b></HeaderCell>
+                                <Cell dataKey="id" />
+                            </Column>
 
-                        <Column flexGrow={1} align="center">
-                            <HeaderCell>Nombre</HeaderCell>
-                            <Cell dataKey="nombre" />
-                        </Column>
+                            <Column width={200} flexGrow={1} align="center" resizable>
+                                <HeaderCell><b>Nombre</b></HeaderCell>
+                                <Cell dataKey="nombre" />
+                            </Column>
 
-                        <Column flexGrow={1} align="center">
-                            <HeaderCell>Media Salarial</HeaderCell>
-                            <Cell dataKey="media_salarial" />
-                        </Column>
+                            <Column width={200} flexGrow={1} align="center" resizable>
+                                <HeaderCell><b>Media Salarial</b></HeaderCell>
+                                <Cell dataKey="media_salarial" />
+                            </Column>
 
-                        <Column flexGrow={1} align="center">
-                            <HeaderCell>Empresa Ofertante</HeaderCell>
-                            <Cell>
-                                {rowData => getEmpresaNombre(rowData.id_empresa)}
-                            </Cell>
-                        </Column>
+                            <Column width={200} flexGrow={1} align="center" resizable>
+                                <HeaderCell><b>Empresa Ofertante</b></HeaderCell>
+                                <Cell>
+                                    {rowData => getEmpresaNombre(rowData.id_empresa)}
+                                </Cell>
+                            </Column>
 
-                        <Column flexGrow={1} align="center">
-                            <HeaderCell>Acciones</HeaderCell>
-                            <Cell>
-                                {rowData => (
-                                    <span>
-                                        <IconButton
-                                            icon={<EditIcon style={{ color: 'green' }} />}
-                                            appearance="primary"
-                                            size="xs"
-                                            onClick={() => navigate(`/work-forms?edit=${rowData.id}`)}
-                                            className="mr-4"
-                                        />
-                                        <IconButton
-                                            icon={<TrashIcon style={{ color: 'red' }} />}
-                                            appearance="subtle"
-                                            size="xs"
-                                            onClick={() => handleDelete(rowData.id)}
-                                            className='mr-4'
-                                        />
-                                        <IconButton
-                                            icon={<UserInfoIcon style={{ color: 'blue' }} />}
-                                            appearance="primary"
-                                            size="xs"
-                                            onClick={() => navigate(`/work-apply?apply=${rowData.id}`)}
-                                        >
-                                            <span className="text-blue-800 ml-1">Aplicar</span>
-                                        </IconButton>
-                                    </span>
-                                )}
-                            </Cell>
-                        </Column>
-                    </Table>
+                            <Column width={200} flexGrow={1} align="center" resizable>
+                                <HeaderCell><b>Acciones</b></HeaderCell>
+                                <Cell>
+                                    {rowData => (
+                                        <span>
+                                            <IconButton
+                                                icon={<EditIcon style={{ color: 'green' }} />}
+                                                appearance="primary"
+                                                size="xs"
+                                                onClick={() => navigate(`/work-forms?edit=${rowData.id}`)}
+                                                className="mr-2"
+                                            />
+                                            <IconButton
+                                                icon={<TrashIcon style={{ color: 'red' }} />}
+                                                appearance="subtle"
+                                                size="xs"
+                                                onClick={() => handleDelete(rowData.id)}
+                                                className='mr-2'
+                                            />
+                                            <IconButton
+                                                icon={<UserInfoIcon style={{ color: 'blue' }} />}
+                                                appearance="primary"
+                                                size="xs"
+                                                onClick={() => navigate(`/work-apply?apply=${rowData.id}`)}
+                                            >
+                                                <span className="text-blue-800 ml-1">Aplicar</span>
+                                            </IconButton>
+                                        </span>
+                                    )}
+                                </Cell>
+                            </Column>
+                        </Table>
+                    </div>
                 </div>
             </main>
             <ToastContainer />
