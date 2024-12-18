@@ -80,6 +80,7 @@ export const validateForm = (data: any, section: string) => {
         case 'company':
             const companyRequiredFields = {
                 nombre: 'Nombre de la empresa es requerido',
+                id_departamento_constitucion : 'Departamento de constitución es requerido'
             };
 
             Object.entries(companyRequiredFields).forEach(([field, message]) => {
@@ -126,6 +127,8 @@ export const validateForm = (data: any, section: string) => {
 
         case 'housing':
             const housingRequiredFields = {
+                id_persona: 'Propietario es requerido',
+                id_municipio: 'Municipio es requerido',
                 direccion: 'Dirección es requerida',
                 barrio: 'Barrio es requerido',
                 pisos: 'Número de pisos es requerido',
@@ -134,6 +137,7 @@ export const validateForm = (data: any, section: string) => {
                 habitaciones: 'Número de habitaciones es requerido',
                 baños: 'Número de baños es requerido',
                 estrato: 'Estrato es requerido',
+                tipo: 'Tipo de vivienda es requerido'
             };
 
             Object.entries(housingRequiredFields).forEach(([field, message]) => {
@@ -153,12 +157,6 @@ export const validateForm = (data: any, section: string) => {
                     errors[field] = `El valor de ${field.replace('_', ' ')} debe ser un número positivo`;
                 }
             });
-
-            // Validación de área
-            if (data.area_construida && data.area_total &&
-                parseFloat(data.area_construida) > parseFloat(data.area_total)) {
-                errors.area_construida = 'El área construida no puede ser mayor al área total';
-            }
 
             // Validación de estrato
             if (data.estrato && (data.estrato < 1 || data.estrato > 6)) {

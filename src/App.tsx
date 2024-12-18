@@ -275,7 +275,8 @@ function App() {
               activeSection={activeSection}
             />
             <HousingForm
-              data={formData.housing}
+              dataVivienda={formData.housing}
+              dataPersonaVivienda={formData.housing}
               errors={errors}
               onChange={handleChange}
               activeSection={activeSection}

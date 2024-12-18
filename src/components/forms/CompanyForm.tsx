@@ -46,14 +46,6 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 <div>
                 <div className="flex items-center mb-6 justify-between">
                         <h2 className="text-2xl font-semibold text-emerald-800">Información de la Empresa</h2>
-                        <button
-                            type="button"
-                            className="px-4 py-2 text-emerald-800 rounded"
-                            onClick={() => {
-                                fetchDepartamentos();
-                            }}>
-                            Actualizar
-                        </button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormInput
