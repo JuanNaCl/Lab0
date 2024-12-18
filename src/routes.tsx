@@ -10,11 +10,12 @@ import LocationListPage from './pages/list-pages/location-list';
 import LocationPage from './pages/forms-pages/location';
 import DepartamentoListPage from './pages/list-pages/departamento';
 import DepartamentoPage from './pages/forms-pages/departamento';
+import AppNueva from './AppNueva';
 
 const AppRoutes = () => (
   <Router>
     <Routes>
-      <Route path="/" element={<App />} />
+      <Route path="/" element={<AppNueva />} />
       <Route path="/personal-forms" element={<Personal />} />
       <Route path="/personal-list" element={<PersonalListPage />} />
       <Route path="/work-forms" element={<TrabajoPage />} />

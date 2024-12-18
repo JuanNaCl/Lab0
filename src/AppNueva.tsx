@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navbar } from './components/Navbar';
+import { Navbar } from './components/NavbarNueva';
 import { PersonalInfoForm } from './components/forms/PersonalInfoForm';
 import { VehicleForm } from './components/forms/VehicleForm';
 import { FineForm } from './components/forms/FineForm';
@@ -18,7 +18,7 @@ import { Popup } from './components/common/popUp';
 import { DepartamentForm } from './components/forms/DepartamentoForm';
 
 function App() {
-  const [activeSection, setActiveSection] = useState('personal');
+  const [activeSection] = useState('personal');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
@@ -188,7 +188,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-emerald-50">
-      <Navbar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <Navbar activeSection={""} />
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
