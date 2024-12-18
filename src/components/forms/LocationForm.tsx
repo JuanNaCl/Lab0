@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FormInput } from '../common/FormInput';
 import { Municipio } from '../../types';
-import supabase from '../common/supabaseClient';
 import { FormSelect } from '../common/FormSelect';
+import supabase from '../common/supabaseClient';
 
 interface LocationFormProps {
     municipioData: Municipio;

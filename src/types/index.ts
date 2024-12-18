@@ -27,13 +27,13 @@ export interface Vehiculo extends BaseEntity {
 }
 
 export interface Comparendo extends BaseEntity {
-    id_poseedor: number;
+    id_poseedor: any;
     nombre: string;
     monto: number;
     fecha: string;
     razon: string;
     nota: string;
-    imagen: string;
+    id_vehiculo: any;
 }
 
 export interface Vivienda extends BaseEntity {
@@ -77,4 +77,11 @@ export interface Aplicacion extends BaseEntity {
 export interface Empresa extends BaseEntity {
     nombre: string;
     id_departamento_constitucion: number;
+}
+
+export interface Familia extends BaseEntity {
+    fecha_registro: string;
+    id_persona: any;
+    nombre_familia: string;
+    es_cdf: boolean
 }
