@@ -8,6 +8,7 @@ import { Popup } from '../../components/common/popUp';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Save } from 'lucide-react';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const TrabajoPage = () => {
     const [formData, setFormData] = useState<Trabajo>({} as Trabajo);
@@ -69,7 +70,11 @@ const TrabajoPage = () => {
                 // Update existing record
                 ({ data, error } = await supabase
                     .from('Trabajo')
-                    .update([formData])
+                    .update([{
+                        nombre: formData.nombre,
+                        media_salarial: formData.media_salarial,
+                        id_empresa: parseInt(formData.id_empresa.value),
+                    }])
                     .eq('id', editId)
                     .select());
             } else {
@@ -79,6 +84,7 @@ const TrabajoPage = () => {
                     .insert([{
                         nombre: formData.nombre,
                         media_salarial: formData.media_salarial,
+                        id_empresa: parseInt(formData.id_empresa.value),
                     }])
                     .select());
             }
@@ -99,7 +105,7 @@ const TrabajoPage = () => {
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 2750,
+                        autoClose: 1800,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -108,7 +114,7 @@ const TrabajoPage = () => {
                     });
                     setTimeout(() => {
                         navigate('/work-list');
-                    }, 2800); // Delay to allow the toast to be visible
+                    }, 1850); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -121,6 +127,7 @@ const TrabajoPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"work"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -147,7 +154,10 @@ const TrabajoPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false);
+                    navigate(0);
+                }}
             />
             <ToastContainer />
         </div>

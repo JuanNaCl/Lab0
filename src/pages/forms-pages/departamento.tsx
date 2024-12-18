@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PersonalInfoForm } from '../../components/forms/PersonalInfoForm';
 import { validateForm } from '../../utils/validation';
-import { PersonalInfo } from '../../types';
+import { Departamento } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Save } from 'lucide-react';
-import { Navbar } from '../../components/common/NavbarNueva';
+import { DepartamentForm } from '../../components/forms/DepartamentoForm';
 
 
-const Personal = () => {
-    const [formData, setFormData] = useState<PersonalInfo>({} as PersonalInfo);
+const DepartamentoPage = () => {
+    const [formData, setFormData] = useState<Departamento>({} as Departamento);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
@@ -22,21 +20,21 @@ const Personal = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchPersona = async (id: string) => {
+        const fetchDepartamentoById = async (id: string) => {
             const { data, error } = await supabase
-                .from('Persona')
+                .from('Departamento')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching persona:', error);
+                console.error('Error fetching Departamento:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchPersona(editId);
+            fetchDepartamentoById(editId);
         }
     }, [editId]);
 
@@ -55,72 +53,64 @@ const Personal = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'personal');
+        console.log('Form data:', formData);
+
+        const validationErrors = validateForm(formData, 'departamento');
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
+            console.error('Form validation errors:', validationErrors);
             setIsSubmitting(false);
             return;
         }
 
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('Form data ready for submission:', formData);
 
             let data, error;
-            if (editId) {
-                // Update existing record
-                ({ data, error } = await supabase
-                    .from('Persona')
-                    .update([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
-                    }])
-                    .eq('id', editId)
-                    .select());
+
+            // Normalizar los valores del formulario
+            const normalizedFormData = {
+                id_gobernador: typeof formData.id_gobernador === 'object' ? formData.id_gobernador?.value : formData.id_gobernador, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_Departamento: formData.nombre_departamento.value ? formData.nombre_departamento.value : formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+            };
+            
+            console.log('Es una edición', formData);
+            console.log('Form data normalized:', normalizedFormData);
+            
+            ({ data, error } = await supabase
+                .from('Departamento')
+                .update({
+                    id_gobernador: normalizedFormData.id_gobernador,
+                })
+                .eq('id', normalizedFormData.nombre_Departamento)
+                .select());
+            
+            if (error) {
+                console.error("Error updating Departamento:", error);
             } else {
-                // Insert new record
-                ({ data, error } = await supabase
-                    .from('Persona')
-                    .insert([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
-                    }])
-                    .select());
+                console.log("Updated Departamento data:", data);
             }
+            
 
             if (error) {
-                console.error('Error saving personal info:', error);
-                setPopupMessage('Error al guardar datos personales');
+                console.error('Error inserting Departamento data:', error);
+                setPopupMessage('Error al guardar datos del Departamento');
             } else {
-                console.log('Personal info saved successfully:', data);
-                setPopupMessage('Datos personales guardados exitosamente');
-                setFormData({} as PersonalInfo); // Reset form data if not editing
+                console.log('Departamento data inserted successfully:', data);
+                setPopupMessage('Datos del Departamento guardados exitosamente');
+                setFormData({} as Departamento); // Reset form data
                 setShowPopup(true);
 
                 if (editId) {
                     setShowPopup(false);
+                    console.log('Actualización Exitosa');
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 2750,
+                        autoClose: 1600,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -128,8 +118,8 @@ const Personal = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/personal-list');
-                    }, 2800); // Delay to allow the toast to be visible
+                        navigate('/departamento-list');
+                    }, 2000); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -142,13 +132,11 @@ const Personal = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
-            <Navbar activeSection="personal" />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <PersonalInfoForm
-                        activeSection='personal'
-                            data={formData}
+                        <DepartamentForm
+                            departamentoData={formData}
                             errors={errors}
                             onChange={handleChange}
                         />
@@ -156,10 +144,8 @@ const Personal = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg 
-                                    transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
+                                className={`flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-emerald-600 hover:scale-105'}`}
                             >
-                                <Save className={`w-5 h-5 ${isSubmitting ? 'animate-spin' : ''}`} />
                                 <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
                             </button>
                         </div>
@@ -170,13 +156,14 @@ const Personal = () => {
                 message={popupMessage}
                 show={showPopup}
                 onClose={() => {
-                    setShowPopup(false);
-                    navigate(0);
-                }}
+                    setShowPopup(false)
+                    navigate(-1);
+                    }
+                }
             />
             <ToastContainer />
         </div>
     );
 };
 
-export default Personal;
+export default DepartamentoPage;

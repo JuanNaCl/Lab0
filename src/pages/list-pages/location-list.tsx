@@ -9,6 +9,7 @@ import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Navbar } from '../../components/common/NavbarNueva';
 
 const LocationListPage = () => {
     const [municipios, setMunicipios] = useState<Municipio[]>([]);
@@ -76,6 +77,7 @@ const LocationListPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
+            <Navbar activeSection={"location"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -91,24 +93,24 @@ const LocationListPage = () => {
                     <div className="overflow-x-auto">
                         <Table data={municipios} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Codigo DANE</HeaderCell>
+                                <HeaderCell><b>Codigo DANE</b></HeaderCell>
                                 <Cell dataKey="codigo_municipio" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre municipio</HeaderCell>
+                                <HeaderCell><b>Nombre municipio</b></HeaderCell>
                                 <Cell dataKey="nombre_municipio" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Nombre alcalde</HeaderCell>
+                                <HeaderCell><b>Nombre alcalde</b></HeaderCell>
                                 <Cell>
                                     {rowData => getNombreAlcalde(rowData.id_alcalde)}
                                 </Cell>
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Acciones</HeaderCell>
+                                <HeaderCell><b>Acciones</b></HeaderCell>
                                 <Cell>
                                     {rowData => (
                                         <span>

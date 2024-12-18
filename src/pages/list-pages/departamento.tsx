@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
 import supabase from '../../components/common/supabaseClient';
-import { Vehiculo } from '../../types';
+import { Departamento } from '../../types';
 import { IconButton } from 'rsuite';
 import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
@@ -11,56 +11,77 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from '../../components/common/NavbarNueva';
 
-const VehiclesListPage = () => {
-    const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+const DepartamentoListPage = () => {
+    const [Departamentos, setDepartamentos] = useState<Departamento[]>([]);
+    const [personas, setPersonas] = useState<{ id: number; nombre: string }[]>([]);
     const navigate = useNavigate();
-    const tipoVehiculo: Record<number, string> = {
-        1: 'Carro',
-        2: 'Camion',
-        3: 'Moto',
-    };
 
     useEffect(() => {
-        const fetchVehiculos = async () => {
-            const { data, error } = await supabase
-                .from('Vehiculo')
-                .select('*');
-
-            if (error) {
-                console.error('Error fetching Vehiculo:', error);
-            } else {
-                const vehiculosConTipo = data.map(vehiculo => ({
-                    ...vehiculo,
-                    tipo: tipoVehiculo[vehiculo.tipo] || 'Desconocido',
-                }));
-                setVehiculos(vehiculosConTipo);
-            }
-        };
-
-        fetchVehiculos();
+        fetchDepartamentos();
+        fetchPersonas();
     }, []);
+
+    const fetchDepartamentos = async () => {
+        const { data, error } = await supabase
+            .from('Departamento')
+            .select('*')
+            .not('id_gobernador', 'is', null);
+
+        if (error) {
+            console.error("Error fetching Departamentos:", error);
+        } else {
+            setDepartamentos(data);
+        }
+    };
+
+    const fetchPersonas = async () => {
+        const { data, error } = await supabase
+            .from('Persona')
+            .select('id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido');
+
+        if (error) {
+            console.error("Error fetching Personas:", error);
+        } else {
+            // Mapear las personas para crear un objeto simple con nombre completo
+            const mappedPersonas = data.map(persona => ({
+                id: persona.id,
+                nombre: `${persona.primer_nombre} ${persona.primer_apellido}`.trim()
+            }));
+            setPersonas(mappedPersonas);
+        }
+    };
+
+    // Función para obtener el nombre del gobernador por id
+    const getNombreGobernador = (id_gobernador: number) => {
+        const gobernador = personas.find(persona => persona.id === id_gobernador);
+        return gobernador ? gobernador.nombre : 'N/A';
+    };
 
     const handleDelete = async (id: number) => {
         const { error } = await supabase
-            .from('Vehiculo')
-            .delete()
-            .eq('id', id);
+            .from('Departamento')
+            .update({ 
+                id_gobernador: null,
+            })
+            .eq('id', id)
+            .select();
+
         if (error) {
-            console.error('Error deleting Vehiculo:', error);
+            console.error('Error deleting Departamento:', error);
         } else {
-            setVehiculos(vehiculos.filter(Vehiculo => Vehiculo.id !== id));
+            setDepartamentos(Departamentos.filter(Departamento => Departamento.id !== id));
         }
     };
 
     return (
         <div className="min-h-screen bg-emerald-50">
-            <Navbar activeSection={"vehiculo"} />
+            <Navbar activeSection={"departamento"} />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-2xl font-bold">Vehiculos</h1>
+                        <h1 className="text-2xl font-bold">Departamentos</h1>
                         <button
-                            onClick={() => navigate('/vehiculo-forms')}
+                            onClick={() => navigate('/departamento-forms')}
                             className="flex items-center space-x-2 px-6 py-2 bg-emerald-500 text-white rounded-lg transition-all duration-200 transform hover:bg-emerald-600 hover:scale-105"
                         >
                             Crear
@@ -68,25 +89,22 @@ const VehiclesListPage = () => {
                     </div>
                     {/* Contenedor responsivo */}
                     <div className="overflow-x-auto">
-                        <Table data={vehiculos} autoHeight shouldUpdateScroll>
+                        <Table data={Departamentos} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell><b>Placa</b></HeaderCell>
-                                <Cell dataKey="placa" />
+                                <HeaderCell><b>Codigo DANE</b></HeaderCell>
+                                <Cell dataKey="codigo_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell><b>Marca</b></HeaderCell>
-                                <Cell dataKey="marca" />
+                                <HeaderCell><b>Nombre Departamento</b></HeaderCell>
+                                <Cell dataKey="nombre_departamento" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell><b>Color</b></HeaderCell>
-                                <Cell dataKey="color" />
-                            </Column>
-
-                            <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell><b>Tipo</b></HeaderCell>
-                                <Cell dataKey="tipo" />
+                                <HeaderCell><b>Nombre gobernador</b></HeaderCell>
+                                <Cell>
+                                    {rowData => getNombreGobernador(rowData.id_gobernador)}
+                                </Cell>
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
@@ -98,7 +116,7 @@ const VehiclesListPage = () => {
                                                 icon={<EditIcon style={{ color: 'green' }} />}
                                                 appearance="primary"
                                                 size="xs"
-                                                onClick={() => navigate(`/vehiculo-forms?edit=${rowData.id}`)}
+                                                onClick={() => navigate(`/departamento-forms?edit=${rowData.id}`)}
                                                 className="mr-2"
                                             />
                                             <IconButton
@@ -112,7 +130,6 @@ const VehiclesListPage = () => {
                                 </Cell>
                             </Column>
                         </Table>
-
                     </div>
                 </div>
             </main>
@@ -121,4 +138,4 @@ const VehiclesListPage = () => {
     );
 };
 
-export default VehiclesListPage;
+export default DepartamentoListPage;

@@ -4,7 +4,7 @@ import { validateForm } from '../../utils/validation';
 import { Municipio } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LocationForm } from '../../components/forms/LocationForm';
 
@@ -30,6 +30,7 @@ const LocationPage = () => {
                 console.error('Error fetching Municipio:', error);
             } else {
                 setFormData(data);
+                console.log('Departamento data:', data);
             }
         };
 
@@ -74,12 +75,12 @@ const LocationPage = () => {
                 id_alcalde: formData.id_alcalde?.value || formData.id_alcalde, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
                 area_total: formData.area_total,
                 habitantes_censo_2023: formData.habitantes_censo_2023,
-                nombre_municipio: formData.nombre_municipio?.value || formData.nombre_municipio, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
+                nombre_municipio: formData.nombre_municipio.value ? formData.nombre_municipio.value : formData.id, // Tomamos `value` si es un objeto, de lo contrario, el valor directo
             };
-            
-            console.log('Es una edición');
-            console.log('Form data:', normalizedFormData);
-            
+
+            console.log('Es una edición', formData);
+            console.log('Form data normalized:', normalizedFormData);
+
             ({ data, error } = await supabase
                 .from('Municipio')
                 .update({
@@ -89,13 +90,13 @@ const LocationPage = () => {
                 })
                 .eq('id', normalizedFormData.nombre_municipio)
                 .select());
-            
+
             if (error) {
                 console.error("Error updating Municipio:", error);
             } else {
                 console.log("Updated Municipio data:", data);
             }
-            
+
 
             if (error) {
                 console.error('Error inserting municipio data:', error);
@@ -105,15 +106,16 @@ const LocationPage = () => {
                 setPopupMessage('Datos del municipio guardados exitosamente');
                 setFormData({} as Municipio); // Reset form data
                 setShowPopup(true);
+
                 if (editId) {
-                    console.log('es una edicion y se redirige');
                     setShowPopup(false);
+                    console.log('Actualización Exitosa');
                     toast.success(
                         <>
                             Actualización Exitosa.<br />Sera redirigido en breve.
                         </>, {
                         position: "top-right",
-                        autoClose: 3500,
+                        autoClose: 1600,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -121,8 +123,8 @@ const LocationPage = () => {
                         progress: undefined,
                     });
                     setTimeout(() => {
-                        navigate('/location-list');
-                    }, 1000); // Delay to allow the toast to be visible
+                        navigate(-1);
+                    }, 2000); // Delay to allow the toast to be visible
                 }
             }
         } catch (error) {
@@ -159,8 +161,13 @@ const LocationPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false)
+                    navigate(-1);
+                    }
+                }
             />
+            <ToastContainer />
         </div>
     );
 };

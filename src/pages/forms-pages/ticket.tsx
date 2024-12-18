@@ -1,61 +1,92 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PersonalInfoForm } from '../../components/forms/PersonalInfoForm';
+import { TicketForm } from '../../components/forms/TicketForm';
 import { validateForm } from '../../utils/validation';
-import { PersonalInfo } from '../../types';
+import { Save } from 'lucide-react';
+import { Comparendo } from '../../types';
 import supabase from '../../components/common/supabaseClient';
 import { Popup } from '../../components/common/popUp';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Save } from 'lucide-react';
-import { Navbar } from '../../components/common/NavbarNueva';
 
-
-const Personal = () => {
-    const [formData, setFormData] = useState<PersonalInfo>({} as PersonalInfo);
+const TicketPage = () => {
+    const [formData, setFormData] = useState<Comparendo>({} as Comparendo);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [people, setPeople] = useState<{ id: number; nombre: string }[]>([]);
     const [searchParams] = useSearchParams();
     const editId = searchParams.get('edit');
     const navigate = useNavigate();
 
+    // Fetch de datos de personas
     useEffect(() => {
-        const fetchPersona = async (id: string) => {
+        const fetchPeople = async () => {
             const { data, error } = await supabase
                 .from('Persona')
+                .select('id, nombre');
+            if (error) {
+                console.error('Error fetching people:', error);
+            } else {
+                setPeople(data);
+            }
+        };
+
+        fetchPeople();
+    }, []);
+
+    // Fetch de ticket si es edición
+    useEffect(() => {
+        const fetchTicketById = async (id: string) => {
+            const { data, error } = await supabase
+                .from('Comparendo')
                 .select('*')
                 .eq('id', id)
                 .single();
             if (error) {
-                console.error('Error fetching persona:', error);
+                console.error('Error fetching ticket:', error);
             } else {
                 setFormData(data);
             }
         };
 
         if (editId) {
-            fetchPersona(editId);
+            fetchTicketById(editId);
         }
     }, [editId]);
 
+    // Manejar cambios en el formulario
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
         setFormData(prev => ({
             ...prev,
             [name]: value,
         }));
+
+        // Si se cambia el poseedor, guardar también su nombre
+        if (name === 'id_poseedor') {
+            const selectedPerson = people.find(person => person.id.toString() === value);
+            if (selectedPerson) {
+                setFormData(prev => ({
+                    ...prev,
+                    nombre: selectedPerson.nombre,
+                }));
+            }
+        }
+
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
+    // Enviar formulario
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(formData, 'personal');
+        const validationErrors = validateForm(formData, 'ticket');
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             setIsSubmitting(false);
@@ -68,73 +99,53 @@ const Personal = () => {
 
             let data, error;
             if (editId) {
-                // Update existing record
+                // Actualizar comparendo
                 ({ data, error } = await supabase
-                    .from('Persona')
-                    .update([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
-                    }])
+                    .from('Comparendo')
+                    .update({
+                        id_vehiculo: formData.id_vehiculo.value,
+                        id_poseedor: formData.id_poseedor.value,
+                        nombre: formData.nombre.replace(/\(\d+\)\s*/, ''), // Nombre del poseedor
+                        monto: formData.monto,
+                        fecha: formData.fecha,
+                        razon: formData.razon,
+                        nota: formData.nota,
+                    })
                     .eq('id', editId)
                     .select());
             } else {
-                // Insert new record
+                // Nuevo comparendo
                 ({ data, error } = await supabase
-                    .from('Persona')
+                    .from('Comparendo')
                     .insert([{
-                        primer_nombre: formData.primer_nombre,
-                        segundo_nombre: formData.segundo_nombre,
-                        primer_apellido: formData.primer_apellido,
-                        segundo_apellido: formData.segundo_apellido,
-                        fecha_nacimiento: formData.fecha_nacimiento,
-                        sexo: formData.sexo.value,
-                        email: formData.email,
-                        celular: formData.celular,
-                        salario: formData.salario,
-                        cedula: formData.cedula,
+                        id_vehiculo: formData.id_vehiculo.value,
+                        id_poseedor: formData.id_poseedor.value,
+                        nombre: formData.id_poseedor.label.replace(/\(\d+\)\s*/, ''), // Nombre del poseedor
+                        monto: formData.monto,
+                        fecha: formData.fecha,
+                        razon: formData.razon,
+                        nota: formData.nota,
                     }])
                     .select());
             }
 
             if (error) {
-                console.error('Error saving personal info:', error);
-                setPopupMessage('Error al guardar datos personales');
+                console.error('Error saving ticket:', error);
+                setPopupMessage('Error al guardar el comparendo.');
             } else {
-                console.log('Personal info saved successfully:', data);
-                setPopupMessage('Datos personales guardados exitosamente');
-                setFormData({} as PersonalInfo); // Reset form data if not editing
+                console.log('Ticket saved successfully:', data);
+                setPopupMessage('Comparendo guardado exitosamente.');
+                setFormData({} as Comparendo);
                 setShowPopup(true);
 
                 if (editId) {
-                    setShowPopup(false);
-                    toast.success(
-                        <>
-                            Actualización Exitosa.<br />Sera redirigido en breve.
-                        </>, {
-                        position: "top-right",
-                        autoClose: 2750,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setTimeout(() => {
-                        navigate('/personal-list');
-                    }, 2800); // Delay to allow the toast to be visible
+                    toast.success('Actualización exitosa. Será redirigido.', { autoClose: 3500 });
+                    setTimeout(() => navigate('/ticket-list'), 1000);
                 }
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            setPopupMessage('Ocurrió un error al guardar');
+            setPopupMessage('Ocurrió un error al guardar el comparendo.');
         } finally {
             setIsSubmitting(false);
         }
@@ -142,12 +153,11 @@ const Personal = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
-            <Navbar activeSection="personal" />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <PersonalInfoForm
-                        activeSection='personal'
+                        <TicketForm
+                            activeSection="tickets"
                             data={formData}
                             errors={errors}
                             onChange={handleChange}
@@ -169,14 +179,10 @@ const Personal = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => {
-                    setShowPopup(false);
-                    navigate(0);
-                }}
+                onClose={() => setShowPopup(false)}
             />
-            <ToastContainer />
         </div>
     );
 };
 
-export default Personal;
+export default TicketPage;
