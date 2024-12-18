@@ -66,7 +66,6 @@ const FamilyPage = () => {
             await new Promise(resolve => setTimeout(resolve, 1000)); 
             console.log('Form data ready for submission:', formData);
         
-            const id_persona = parseInt(formData.id_persona!.toString(), 10); 
             const es_cdf = formData.es_cdf ? true : false; // Asegura que es un booleano
         
             let data, error;
@@ -76,7 +75,7 @@ const FamilyPage = () => {
                 .from('Familia')
                 .update({
                     nombre_familia: formData.nombre_familia,
-                    id_persona: id_persona,
+                    id_persona: formData.id_persona.value,
                     es_cdf: es_cdf,
                 })
                 .eq('id', editId)
@@ -86,7 +85,7 @@ const FamilyPage = () => {
                 .from('Familia')
                 .insert([{
                     nombre_familia: formData.nombre_familia,
-                    id_persona: formData.id_persona,
+                    id_persona: formData.id_persona.value,
                     es_cdf: formData.es_cdf,
                 }])
                 .select());

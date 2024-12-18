@@ -18,13 +18,20 @@ const TicketListPage = () => {
         const fetchTickets = async () => {
             const { data, error } = await supabase
                 .from('Comparendo')
-                .select('*');
+                .select(`*, Persona: id_poseedor (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido)`);
 
             if (error) {
                 console.error('Error fetching tickets:', error);
                 toast.error('Error al cargar los comparendos');
             } else {
-                setTickets(data);
+                // Mapear para construir el nombre completo del poseedor
+                const ticketsConPoseedor = data.map(ticket => ({
+                    ...ticket,
+                    nombre: ticket.Persona
+                        ? `${ticket.Persona.primer_nombre} ${ticket.Persona.segundo_nombre || ''} ${ticket.Persona.primer_apellido} ${ticket.Persona.segundo_apellido || ''}`
+                        : 'Desconocido',
+                }));
+                setTickets(ticketsConPoseedor);
             }
         };
 
@@ -62,29 +69,32 @@ const TicketListPage = () => {
                     {/* Contenedor responsivo */}
                     <div className="overflow-x-auto">
                         <Table data={tickets} autoHeight shouldUpdateScroll>
-                            <Column width={150} flexGrow={1} align="center" resizable>
+                            <Column width={200}  align="center" resizable>
                                 <HeaderCell>Fecha</HeaderCell>
                                 <Cell dataKey="fecha" />
                             </Column>
 
-                            <Column width={150} flexGrow={1} align="center" resizable>
+                            <Column width={100} align="center" resizable>
                                 <HeaderCell>Monto</HeaderCell>
-                                <Cell>
-                                    {rowData => `$${rowData.monto}`}
-                                </Cell>
+                                <Cell>{rowData => `COP${rowData.monto}`}</Cell>
                             </Column>
 
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={250} align="center" resizable>
                                 <HeaderCell>Razón</HeaderCell>
                                 <Cell dataKey="razon" />
                             </Column>
 
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={300} align="center" resizable>
                                 <HeaderCell>Poseedor</HeaderCell>
                                 <Cell dataKey="nombre" />
                             </Column>
 
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={200}  align="center" resizable>
+                                <HeaderCell>Nota</HeaderCell>
+                                <Cell dataKey="nota" />
+                            </Column>
+
+                            <Column width={200}  align="center" resizable>
                                 <HeaderCell>Acciones</HeaderCell>
                                 <Cell>
                                     {rowData => (
