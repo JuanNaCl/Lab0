@@ -1,6 +1,5 @@
 export const validateForm = (data: any, section: string) => {
     const errors: Record<string, string> = {};
-
     switch (section) {
         case 'personal':
             const personalRequiredFields = {
@@ -11,6 +10,7 @@ export const validateForm = (data: any, section: string) => {
                 email: 'Email es requerido',
                 celular: 'Celular es requerido',
                 salario: 'Salario es requerido',
+                cedula: 'Cedula es requerida',
             };
 
             Object.entries(personalRequiredFields).forEach(([field, message]) => {
@@ -27,6 +27,19 @@ export const validateForm = (data: any, section: string) => {
             // Numeric validations
             if (data.celular && (isNaN(data.celular) || data.celular < 0)) {
                 errors.celular = 'Celular debe ser un número positivo';
+            }
+            else if (data.celular && data.celular.toString().length !== 10) {
+                errors.celular = 'Celular debe tener 10 dígitos';
+            }
+
+            if (data.cedula && (isNaN(data.cedula) || data.cedula < 0)) {
+                errors.cedula = 'Cedula invalida';
+            }
+            else if (data.cedula && data.cedula.toString().length < 6) {
+                errors.cedula = 'La cedula tiene como minimo 6 digitos';
+            }
+            else if (data.cedula && data.cedula.toString().length > 10) {
+                errors.cedula = 'La cedula tiene como maximo 10 digitos';
             }
 
             if (data.salario && (isNaN(data.salario) || data.salario < 0)) {
@@ -155,15 +168,8 @@ export const validateForm = (data: any, section: string) => {
 
         case 'location':
             const municipioRequiredFields = {
-                nombre_municipio: 'Nombre del municipio es requerido',
-                codigo_municipio: 'Código del municipio es requerido',
                 area_total: 'Área total es requerida',
                 habitantes_censo_2023: 'Habitantes del censo es requerido',
-            };
-
-            const departamentoRequiredFields = {
-                nombre_departamento: 'Nombre del departamento es requerido',
-                codigo_departamento: 'Código del departamento es requerido',
             };
 
             // Validar campos de municipio
@@ -173,22 +179,53 @@ export const validateForm = (data: any, section: string) => {
                 }
             });
 
-            // Validar campos de departamento
-            Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
-                if (!data[field]) {
-                    errors[field] = message;
-                }
-            });
-
             // Validaciones numéricas
             const locationNumericFields = [
-                'codigo_municipio', 'area_total',
-                'habitantes_censo_2023', 'codigo_departamento'
+                'area_total',
+                'habitantes_censo_2023',
             ];
 
             locationNumericFields.forEach(field => {
                 if (data[field] && (isNaN(data[field]) || data[field] <= 0)) {
+                    errors[field] = `El valor de ${field.replace(/_/g, ' ')} debe ser un número positivo`;
+                }
+            });
+            break;
+
+        case 'departament':
+            const departamentoRequiredFields = {
+                nombre_departamento: 'Nombre del departamento es requerido',
+                id_gobernador: 'Gobernador del departamento es requerido',
+            };
+            // Validar campos de departamento
+            Object.entries(departamentoRequiredFields).forEach(([field, message]) => {
+                if (!data.hasOwnProperty(field) || !data[field]) {
+                    errors[field] = message;
+                }
+            });
+            break;
+
+        case 'work':
+            const workRequiredFields = {
+                nombre: 'Nombre del trabajo es requerido',
+                media_salarial: 'La media salarial del trabajo es requerida',
+            };
+            // Validar campos de departamento
+            Object.entries(workRequiredFields).forEach(([field, message]) => {
+                if (!data.hasOwnProperty(field) || !data[field]) {
+                    errors[field] = message;
+                }
+            });
+            const worknumericFields = [
+                'media_salarial',
+            ];
+
+            worknumericFields.forEach(field => {
+                if (data[field] && (isNaN(data[field]) || data[field] < 0)) {
                     errors[field] = `El valor de ${field.replace('_', ' ')} debe ser un número positivo`;
+                }
+                if (data.media_salarial && (data.media_salarial > 2000000000)) {
+                    errors.media_salarial = 'El valor maximo es de 2 mil millones';
                 }
             });
 

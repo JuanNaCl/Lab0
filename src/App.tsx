@@ -15,6 +15,7 @@ import {
 } from './types';
 import supabase from './components/common/supabaseClient';
 import { Popup } from './components/common/popUp';
+import { DepartamentForm } from './components/forms/DepartamentoForm';
 
 function App() {
   const [activeSection, setActiveSection] = useState('personal');
@@ -22,7 +23,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departamento' | 'work' | 'company';
+  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departament' | 'work' | 'company';
 
   const initialFormData = {
     personal: {} as PersonalInfo,
@@ -30,7 +31,10 @@ function App() {
     fine: {} as Comparendo,
     housing: {} as Vivienda,
     municipio: {} as Municipio,
-    departamento: {} as Departamento,
+    departament: {
+      id_gobernador: 0,
+      nombre_departamento: '',
+    } as Departamento,
     work: {} as Trabajo,
     company: {} as Empresa,
   };
@@ -54,8 +58,8 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setIsSubmitting(true);
-  
     const validationErrors = validateForm(
       formData[activeSection as FormDataKey],
       activeSection
@@ -68,16 +72,16 @@ function App() {
     }
   
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form data ready for submission:', formData[activeSection as FormDataKey]);
-      console.log('Active section:', activeSection);
-      
+
+      console.log('Submitting form data:', formData[activeSection as FormDataKey]);
+
       let submissionResult = null;
       switch (activeSection) {
         case 'personal':
           console.log('Submitting personal info:');
           break
         case 'vehicles':
+          {
           const vehicleData = formData[activeSection as FormDataKey];
           const { data, error } = await supabase
             .from('Vehiculo')
@@ -100,6 +104,7 @@ function App() {
             setPopupMessage('Datos del vehículo guardados exitosamente');
             submissionResult = data;
           }
+        }
           break;
         case 'fines':
           console.log('Submitting fines info:');
@@ -107,9 +112,51 @@ function App() {
         case 'housing':
           console.log('Submitting housing info:');
           break;
-        case 'location':
-          console.log('Submitting location info:');
+        case 'location':{ 
+            const locationData = formData[activeSection as FormDataKey];
+            const { data, error } = await supabase
+            .from('Municipio')
+            .update({ 
+              id_alcalde: locationData.id_alcalde.value,
+              area_total:  parseInt(locationData.area_total),
+              habitantes_censo_2023:  parseInt(locationData.habitantes_censo_2023),
+            })
+            .eq('id', locationData.nombre_municipio.value)
+            .select()
+          
+            
+            if (error) {
+              console.error('Error inserting Municipio data:', error);
+              setPopupMessage('Error al guardar datos del Municipio');
+            } else {
+              console.log('Municipio data inserted successfully:', data);
+              setPopupMessage('Datos del Municipio guardados exitosamente');
+              submissionResult = data;
+            }
+          }
           break;
+
+        case 'departament':{
+          const deaprtamentoData = formData[activeSection as FormDataKey];
+          const { data, error } = await supabase
+          .from('Departamento')
+          .update({ 
+            id_gobernador: deaprtamentoData.id_gobernador.value,
+          })
+          .eq('id', deaprtamentoData.nombre_departamento.value)
+          .select()
+        
+          
+          if (error) {
+            console.error('Error inserting departamento data:', error);
+            setPopupMessage('Error al guardar datos del departamento');
+          } else {
+            console.log('departamento data inserted successfully:', data);
+            setPopupMessage('Datos del departamento guardados exitosamente');
+            submissionResult = data;
+          }
+        }
+        break;
         case 'work':
           console.log('Submitting work info:');
           break;
@@ -142,7 +189,6 @@ function App() {
   return (
     <div className="min-h-screen bg-emerald-50">
       <Navbar activeSection={activeSection} onSectionChange={setActiveSection} />
-
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,10 +218,14 @@ function App() {
             />
             <LocationForm
               municipioData={formData.municipio}
-              departamentoData={formData.departamento}
               errors={errors}
               onChange={handleChange}
               activeSection={activeSection}
+            />
+            <DepartamentForm
+              departamentoData={formData.departament}
+              errors={errors}
+              onChange={handleChange}
             />
             <WorkForm
               data={formData.work}
@@ -214,3 +264,4 @@ function App() {
 }
 
 export default App;
+
