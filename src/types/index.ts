@@ -9,17 +9,18 @@ export interface PersonalInfo extends BaseEntity {
     primer_apellido: string;
     segundo_apellido: string;
     fecha_nacimiento: string;
-    sexo: string;
+    sexo: {value: number, label: string};
     email: string;
     celular: number;
     salario: number;
+    cedula: number;
 }
 
 export interface Vehiculo extends BaseEntity {
-    id_dueño: number;
+    id_dueño: any;
     nombre: string;
     marca: string;
-    tipo: string;
+    tipo: any;
     color: string;
     valor_nuevo: number;
     placa: string;
@@ -32,7 +33,7 @@ export interface Comparendo extends BaseEntity {
     fecha: string;
     razon: string;
     nota: string;
-    imagen: string;
+    id_vehiculo: number;
 }
 
 export interface Vivienda extends BaseEntity {
@@ -49,8 +50,8 @@ export interface Vivienda extends BaseEntity {
 }
 
 export interface Municipio extends BaseEntity {
-    id_alcalde: number;
-    nombre_municipio: string;
+    id_alcalde: any;
+    nombre_municipio: any;
     id_departamento: number;
     codigo_municipio: number;
     area_total: number;
@@ -60,7 +61,6 @@ export interface Municipio extends BaseEntity {
 export interface Departamento extends BaseEntity {
     id_gobernador: number;
     nombre_departamento: string;
-    codigo_departamento: number;
 }
 
 export interface Trabajo extends BaseEntity {
@@ -71,4 +71,11 @@ export interface Trabajo extends BaseEntity {
 export interface Empresa extends BaseEntity {
     nombre: string;
     id_departamento_constitucion: number;
+}
+
+export interface Familia extends BaseEntity {
+    fecha_registro: string;
+    id_persona: number;
+    nombre_familia: string;
+    es_cdf: boolean
 }
