@@ -1,56 +1,59 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
 import supabase from '../../components/common/supabaseClient';
-import { Familia } from '../../types';
 import { IconButton } from 'rsuite';
 import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const FamilyListPage = () => {
-    const [familias, setFamilias] = useState<Familia[]>([]);
+    const [familias, setFamilias] = useState([]);
     const navigate = useNavigate();
 
-    // Fetch data from Supabase
     useEffect(() => {
         const fetchFamilias = async () => {
             const { data, error } = await supabase
                 .from('Familia')
-                .select("*");
+                .select(`
+                    id,
+                    nombre_familia,
+                    es_cdf,
+                    fecha_registro,
+                    Persona: id_persona (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido)
+                `);
 
             if (error) {
-                console.error('Error fetching Familias:', error);
+                console.error('Error fetching families:', error);
+                toast.error('Error al cargar la tabla Familia');
             } else {
-                const formattedData = data.map((familia) => ({
-                    ...familia,
-                    persona_nombre: `${familia.Persona.primer_nombre} ${familia.Persona.segundo_nombre ?? ''} ${familia.Persona.primer_apellido} ${familia.Persona.segundo_apellido ?? ''}`.trim(),
-                }));
-                setFamilias(formattedData);
+                console.log('Fetched families:', data);
+                setFamilias(data);
             }
         };
 
         fetchFamilias();
     }, []);
 
-    // Delete a family record
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: unknown) => {
         const { error } = await supabase
             .from('Familia')
             .delete()
             .eq('id', id);
 
         if (error) {
-            console.error('Error deleting Familia:', error);
+            console.error('Error deleting family:', error);
+            toast.error('Error al eliminar la familia');
         } else {
-            setFamilias(familias.filter(familia => familia.id !== id));
+            setFamilias(familias.filter(family => family.id !== id));
+            toast.success('Familia eliminada correctamente');
         }
     };
 
     return (
-        <div className="min-h-screen bg-indigo-50">
+        <div className="min-h-screen bg-emerald-50">
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -62,34 +65,37 @@ const FamilyListPage = () => {
                             Crear
                         </button>
                     </div>
-                    {/* Contenedor responsivo */}
                     <div className="overflow-x-auto">
                         <Table data={familias} autoHeight shouldUpdateScroll>
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={300} align="center" resizable>
                                 <HeaderCell>Nombre Familia</HeaderCell>
                                 <Cell dataKey="nombre_familia" />
                             </Column>
 
-                            <Column width={300} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Cabeza de Familia</HeaderCell>
-                                <Cell dataKey="persona_nombre" />
-                            </Column>
-
-                            <Column width={150} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Es Cabeza</HeaderCell>
+                            <Column width={300} align="center" resizable>
+                                <HeaderCell>Nombre del Poseedor</HeaderCell>
                                 <Cell>
-                                    {rowData => (rowData.es_cdf ? 'Sí' : 'No')}
+                                    {rowData => rowData.Persona
+                                        ? `${rowData.Persona.primer_nombre} ${rowData.Persona.segundo_nombre || ''} ${rowData.Persona.primer_apellido} ${rowData.Persona.segundo_apellido}`
+                                        : 'Sin datos'}
                                 </Cell>
                             </Column>
 
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={200} align="center" resizable>
                                 <HeaderCell>Fecha Registro</HeaderCell>
                                 <Cell>
-                                    {rowData => new Date(rowData.fecha_registro).toLocaleDateString()}
+                                    {rowData => rowData.fecha_registro?.split('T')[0] || 'Sin fecha'}
                                 </Cell>
                             </Column>
 
-                            <Column width={200} flexGrow={1} align="center" resizable>
+                            <Column width={200} align="center" resizable>
+                                <HeaderCell>Cabeza de Familia</HeaderCell>
+                                <Cell>
+                                    {rowData => rowData.es_cdf ? 'Sí' : 'No'}
+                                </Cell>
+                            </Column>
+
+                            <Column width={150} align="center" resizable>
                                 <HeaderCell>Acciones</HeaderCell>
                                 <Cell>
                                     {rowData => (

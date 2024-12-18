@@ -32,8 +32,8 @@ const AppRoutes = () => (
       <Route path="/departamento-forms" element={<DepartamentoPage />} />
       <Route path="/departamento-list" element={<DepartamentoListPage />} />
       {/* Add routes for other sections */}
-      <Route path="/ticket-forms" element={<TicketPage />} />
-      <Route path="/ticket-list" element={<TicketListPage />} />
+      <Route path="/fines-forms" element={<TicketPage />} />
+      <Route path="/fines-list" element={<TicketListPage />} />
       <Route path="/family-forms" element={<FamilyPage />} />
       <Route path="/family-list" element={<FamilyListPage />} />
     </Routes>

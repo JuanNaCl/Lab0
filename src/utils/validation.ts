@@ -32,7 +32,7 @@ export const validateForm = (data: any, section: string) => {
                 errors.celular = 'Celular debe tener 10 dígitos';
             }
 
-            if (data.cedula && (isNaN(data.cedula) || data.cedula < 0)) {
+            if (data.cedula && (isNaN(data.cedula) || data.cedula <= 0)) {
                 errors.cedula = 'Cedula invalida';
             }
             else if (data.cedula && data.cedula.toString().length < 6) {

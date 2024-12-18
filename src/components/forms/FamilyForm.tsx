@@ -41,6 +41,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
 
     return (
         <div className="space-y-6">
+            <h2 className="text-2xl font-semibold mb-6">Información de Familia</h2>
             {/* Nombre familia */}
             <FormInput
                 label="Nombre de la Familia"

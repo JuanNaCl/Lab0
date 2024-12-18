@@ -70,27 +70,27 @@ const VehiclesListPage = () => {
                     <div className="overflow-x-auto">
                         <Table data={vehiculos} autoHeight shouldUpdateScroll>
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Placa</HeaderCell>
+                                <HeaderCell><b>Placa</b></HeaderCell>
                                 <Cell dataKey="placa" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Marca</HeaderCell>
+                                <HeaderCell><b>Marca</b></HeaderCell>
                                 <Cell dataKey="marca" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Color</HeaderCell>
+                                <HeaderCell><b>Color</b></HeaderCell>
                                 <Cell dataKey="color" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Tipo</HeaderCell>
+                                <HeaderCell><b>Tipo</b></HeaderCell>
                                 <Cell dataKey="tipo" />
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
-                                <HeaderCell>Acciones</HeaderCell>
+                                <HeaderCell><b>Acciones</b></HeaderCell>
                                 <Cell>
                                     {rowData => (
                                         <span>

@@ -66,7 +66,6 @@ const FamilyPage = () => {
             await new Promise(resolve => setTimeout(resolve, 1000)); 
             console.log('Form data ready for submission:', formData);
         
-            const id_persona = parseInt(formData.id_persona!.toString(), 10); 
             const es_cdf = formData.es_cdf ? true : false; // Asegura que es un booleano
         
             let data, error;
@@ -76,7 +75,7 @@ const FamilyPage = () => {
                 .from('Familia')
                 .update({
                     nombre_familia: formData.nombre_familia,
-                    id_persona: id_persona,
+                    id_persona: formData.id_persona.value,
                     es_cdf: es_cdf,
                 })
                 .eq('id', editId)
@@ -86,7 +85,7 @@ const FamilyPage = () => {
                 .from('Familia')
                 .insert([{
                     nombre_familia: formData.nombre_familia,
-                    id_persona: formData.id_persona,
+                    id_persona: formData.id_persona.value,
                     es_cdf: formData.es_cdf,
                 }])
                 .select());
@@ -118,7 +117,7 @@ const FamilyPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-indigo-50">
+        <div className="min-h-screen bg-emerald-50">
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <h1 className="text-2xl font-bold mb-6">

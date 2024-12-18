@@ -96,9 +96,6 @@ const TicketPage = () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form data ready for submission:', formData);
-            const id_vehiculo = parseInt(formData.id_vehiculo!.toString(), 10);
-            const id_poseedor = parseInt(formData.id_poseedor!.toString(), 10);
-            const monto = formData.monto ? parseInt(formData.monto.toString(), 10) : null;
 
             let data, error;
             if (editId) {
@@ -106,10 +103,10 @@ const TicketPage = () => {
                 ({ data, error } = await supabase
                     .from('Comparendo')
                     .update({
-                        id_vehiculo,
-                        id_poseedor,
-                        nombre: formData.nombre, // Nombre del poseedor
-                        monto,
+                        id_vehiculo: formData.id_vehiculo.value,
+                        id_poseedor: formData.id_poseedor.value,
+                        nombre: formData.nombre.replace(/\(\d+\)\s*/, ''), // Nombre del poseedor
+                        monto: formData.monto,
                         fecha: formData.fecha,
                         razon: formData.razon,
                         nota: formData.nota,
@@ -121,10 +118,10 @@ const TicketPage = () => {
                 ({ data, error } = await supabase
                     .from('Comparendo')
                     .insert([{
-                        id_vehiculo,
-                        id_poseedor,
-                        nombre: formData.nombre, // Nombre del poseedor
-                        monto,
+                        id_vehiculo: formData.id_vehiculo.value,
+                        id_poseedor: formData.id_poseedor.value,
+                        nombre: formData.id_poseedor.label.replace(/\(\d+\)\s*/, ''), // Nombre del poseedor
+                        monto: formData.monto,
                         fecha: formData.fecha,
                         razon: formData.razon,
                         nota: formData.nota,
@@ -155,7 +152,7 @@ const TicketPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-indigo-50">
+        <div className="min-h-screen bg-emerald-50">
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">

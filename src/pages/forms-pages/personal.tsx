@@ -146,7 +146,7 @@ const Personal = () => {
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <PersonalInfoForm
-                            activeSection='personal'
+                        activeSection='personal'
                             data={formData}
                             errors={errors}
                             onChange={handleChange}
@@ -168,7 +168,10 @@ const Personal = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false);
+                    navigate(0);
+                }}
             />
             <ToastContainer />
         </div>
