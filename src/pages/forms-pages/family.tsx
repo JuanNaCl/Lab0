@@ -96,7 +96,7 @@ const FamilyPage = () => {
                 console.error('Error saving family data:', error);
                 setPopupMessage('Error al guardar datos de la familia');
             } else {
-                setPopupMessage('Datos de la familia guardados con exito');
+                setPopupMessage('Datos de la familia guardados con éxito');
                 setShowPopup(true);
                 setFormData({} as Familia);
 
