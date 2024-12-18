@@ -33,7 +33,7 @@ export interface Comparendo extends BaseEntity {
     fecha: string;
     razon: string;
     nota: string;
-    imagen: string;
+    id_vehiculo: number;
 }
 
 export interface Vivienda extends BaseEntity {
@@ -77,4 +77,11 @@ export interface Aplicacion extends BaseEntity {
 export interface Empresa extends BaseEntity {
     nombre: string;
     id_departamento_constitucion: number;
+}
+
+export interface Familia extends BaseEntity {
+    fecha_registro: string;
+    id_persona: number;
+    nombre_familia: string;
+    es_cdf: boolean
 }

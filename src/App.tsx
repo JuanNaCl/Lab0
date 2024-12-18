@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { PersonalInfoForm } from './components/forms/PersonalInfoForm';
 import { VehicleForm } from './components/forms/VehicleForm';
-import { FineForm } from './components/forms/FineForm';
+import { TicketForm } from './components/forms/TicketForm';
 import { HousingForm } from './components/forms/HousingForm';
 import { LocationForm } from './components/forms/LocationForm';
 import { WorkForm } from './components/forms/WorkForm';
@@ -23,12 +23,12 @@ function App() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  type FormDataKey = 'personal' | 'vehicle' | 'fine' | 'housing' | 'municipio' | 'departament' | 'work' | 'company';
+  type FormDataKey = 'personal' | 'vehicle' | 'ticket' | 'housing' | 'municipio' | 'departament' | 'work' | 'company';
 
   const initialFormData = {
     personal: {} as PersonalInfo,
     vehicle: {} as Vehiculo,
-    fine: {} as Comparendo,
+    ticket: {} as Comparendo,
     housing: {} as Vivienda,
     municipio: {} as Municipio,
     departament: {
@@ -106,8 +106,8 @@ function App() {
           }
         }
           break;
-        case 'fines':
-          console.log('Submitting fines info:');
+        case 'tickets':
+          console.log('Submitting tickets info:');
           break;
         case 'housing':
           console.log('Submitting housing info:');
@@ -204,8 +204,8 @@ function App() {
               onChange={handleChange}
               activeSection={activeSection}
             />
-            <FineForm
-              data={formData.fine}
+            <TicketForm
+              data={formData.ticket}
               errors={errors}
               onChange={handleChange}
               activeSection={activeSection}
