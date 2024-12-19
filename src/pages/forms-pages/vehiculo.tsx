@@ -75,6 +75,7 @@ const VehiclePage = () => {
                 ({ data, error } = await supabase
                     .from('Vehiculo')
                     .update({
+                        id_dueño: formData.id_dueño?.value || formData.id_dueño,
                         nombre: formData.nombre,
                         marca: formData.marca,
                         tipo: formData.tipo.value,
@@ -88,7 +89,7 @@ const VehiclePage = () => {
                 ({ data, error } = await supabase
                     .from('Vehiculo')
                     .insert([{
-                        id_dueño: formData.id_dueño.value,
+                        id_dueño: formData.id_dueño?.value || formData.id_dueño,
                         nombre: formData.nombre,
                         marca: formData.marca,
                         tipo: formData.tipo.value,

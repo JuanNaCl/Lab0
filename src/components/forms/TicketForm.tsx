@@ -16,43 +16,46 @@ export const TicketForm: React.FC<TicketFormProps> = ({
     errors,
     onChange,
 }) => {
-    const [vehicles, setVehicles] = useState<{ id: number; nombre: string }[]>([]);
-    const [people, setPeople] = useState<{ id: number; nombre: string }[]>([]);
+    const [vehicles, setVehicles] = useState<{ value: number; label: string }[]>([]);
+    const [people, setPeople] = useState<{ value: number; label: string }[]>([]);
+
+
+    const fetchVehicles = async () => {
+        let { data: Vehiculo, error } = await supabase
+        .from('Vehiculo')
+        .select('id, nombre');
+        if (error) {
+            console.error('Error al obtener vehículos:', error);
+        } else if (Vehiculo?.length === 0) {
+            console.error('No Vehicles found');
+        }
+        else {
+            const formattedOptions = Vehiculo!.map((vehicle) => ({
+                value: vehicle.id,
+                label: `(${vehicle.nombre})`,
+            }));
+            setVehicles(formattedOptions)
+        }
+    };
+    // Obtener personas desde Supabase
+    const fetchPeople = async () => {
+        let { data: Persona, error } = await supabase.from('Persona').select('id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, cedula');
+        if (error) {
+            console.error('Error al obtener personas:', error);
+        } else {
+            const formattedOptions = Persona!.map((persona) => ({
+                value: persona.id,
+                label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`,
+            }));
+            setPeople(formattedOptions);
+        }
+    };
 
     useEffect(() => {
         // Obtener vehículos desde Supabase
-        const fetchVehicles = async () => {
-            let { data: Vehiculo, error } = await supabase.from('Vehiculo').select('id, nombre');
-            if (error) {
-                console.error('Error al obtener vehículos:', error);
-            } else if (Vehiculo?.length === 0) {
-                console.error('No Vehicles found');
-            }
-            else {
-                const formattedOptions = Vehiculo!.map((vehicle) => ({
-                    id: vehicle.id,
-                    nombre: `(${vehicle.nombre})`,
-                }));
-                setVehicles(formattedOptions)
-            }
-        };
-
-        // Obtener personas desde Supabase
-        const fetchPeople = async () => {
-            let { data: Persona, error } = await supabase.from('Persona').select('id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, cedula');
-            if (error) {
-                console.error('Error al obtener personas:', error);
-            } else {
-                const formattedOptions = Persona!.map((persona) => ({
-                    id: persona.id,
-                    nombre: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`,
-                }));
-                setPeople(formattedOptions);
-            }
-        };
         fetchVehicles();
         fetchPeople();
-    }, []);
+    }, [vehicles, people]);
 
     return (
         <div className="space-y-4">
@@ -62,12 +65,9 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                 <FormSelect
                     label="Vehículo"
                     name="id_vehiculo"
-                    value={data.id_vehiculo}
+                    value={vehicles.find((option) => option.value === data.id_vehiculo)}
                     onChange={onChange}
-                    options={vehicles.map((vehicle) => ({
-                        value: vehicle.id,
-                        label: vehicle.nombre,
-                    }))}
+                    options={vehicles}
                     error={errors.id_vehiculo}
                     required
                 />
@@ -76,12 +76,9 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                 <FormSelect
                     label="Poseedor"
                     name="id_poseedor"
-                    value={data.id_poseedor}
+                    value={people.find((option) => option.value === data.id_poseedor)}
                     onChange={onChange}
-                    options={people.map((person) => ({
-                        value: person.id,
-                        label: person.nombre,
-                    }))}
+                    options={people}
                     error={errors.id_poseedor}
                     required
                 />
@@ -101,7 +98,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                 <FormInput
                     label="Fecha"
                     name="fecha"
-                    type="date"
+                    type="datetime-local"
                     value={data.fecha}
                     onChange={onChange}
                     error={errors.fecha}

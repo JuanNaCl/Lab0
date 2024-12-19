@@ -83,7 +83,7 @@ export const validateForm = (data: any, section: string) => {
 
                 if (!placaRegexAuto.test(placa) && !placaRegexMoto.test(placa)) {
                     errors.placa =
-                'La placa no es válida. Use "LLLNNN" para autos o "LLLNNL" para motos.';
+                'La placa no es válida. Use "AAA###" para autos o "AAA##A" para motos.';
                 }
             }
 
@@ -143,6 +143,7 @@ export const validateForm = (data: any, section: string) => {
             break;
 
         case 'housing':
+            console.log('Validating housing form:', data);
             const housingRequiredFields = {
                 id_persona: 'Propietario es requerido',
                 id_municipio: 'Municipio es requerido',
