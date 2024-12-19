@@ -33,43 +33,43 @@ const HousingListPage = () => {
 
     const handleDelete = async (id: number) => {
         console.log('started deletion');
-        const { error : errorPersonaVivienda } = await supabase
+        const { error: errorPersonaVivienda } = await supabase
             .from('Persona_Vivienda')
             .delete()
             .eq('id_vivienda', id);
         if (errorPersonaVivienda) {
             console.error('Error deleting housing relations:', errorPersonaVivienda);
             toast.error(
-              <>
-                Error al eliminar las relaciones de vivienda.
-              </>, {
-              position: "top-right",
-              autoClose: 2500,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
+                <>
+                    Error al eliminar las relaciones de vivienda.
+                </>, {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             })
         }
         const { error } = await supabase
             .from('Vivienda')
             .delete()
             .eq('id', id);
-            
+
         if (error) {
             console.error('Error deleting housing:', error);
             toast.error(
-              <>
-                Error al eliminar la vivienda.
-              </>, {
-              position: "top-right",
-              autoClose: 2500,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
+                <>
+                    Error al eliminar la vivienda.
+                </>, {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             })
         } else {
             setViviendas(viviendas.filter(Vivienda => Vivienda.id !== id));
@@ -98,15 +98,15 @@ const HousingListPage = () => {
                                 <HeaderCell>Dirección</HeaderCell>
                                 <Cell>
                                     {rowData => (
-                                    <>
-                                        {rowData.direccion}, {rowData.barrio}
-                                    </>
+                                        <>
+                                            {rowData.direccion}, {rowData.barrio}
+                                        </>
                                     )}
                                 </Cell>
                             </Column>
                             <Column width={200} flexGrow={1} align="center" resizable>
                                 <HeaderCell>Ubicación</HeaderCell>
-                                <Cell>{rowData => `${rowData.Municipio.nombre_municipio??""}`}</Cell>
+                                <Cell>{rowData => `${rowData.Municipio.nombre_municipio ?? ""}`}</Cell>
                             </Column>
 
                             <Column width={200} flexGrow={1} align="center" resizable>
