@@ -45,7 +45,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
             } else {
                 const formattedOptions = Persona!.map((persona) => ({
                     id: persona.id,
-                    nombre: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+                    nombre: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`,
                 }));
                 setPeople(formattedOptions);
             }

@@ -77,8 +77,8 @@ const TicketListPage = () => {
                             </Column>
 
                             <Column width={100} align="center" resizable>
-                                <HeaderCell>Monto</HeaderCell>
-                                <Cell>{rowData => `COP${rowData.monto}`}</Cell>
+                                <HeaderCell>Monto (COP)</HeaderCell>
+                                <Cell>{rowData => `${rowData.monto}`}</Cell>
                             </Column>
 
                             <Column width={250} align="center" resizable>
