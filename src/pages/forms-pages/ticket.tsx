@@ -196,7 +196,11 @@ const TicketPage = () => {
             <Popup
                 message={popupMessage}
                 show={showPopup}
-                onClose={() => setShowPopup(false)}
+                onClose={() => {
+                    setShowPopup(false)
+                    navigate(-1);
+                    }
+                }            
             />
             <ToastContainer />
         </div>

@@ -156,9 +156,10 @@ const TrabajoPage = () => {
                 message={popupMessage}
                 show={showPopup}
                 onClose={() => {
-                    setShowPopup(false);
-                    navigate(0);
-                }}
+                    setShowPopup(false)
+                    navigate(-1);
+                    }
+                }
             />
             <ToastContainer />
         </div>

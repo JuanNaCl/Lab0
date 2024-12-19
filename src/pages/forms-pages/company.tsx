@@ -161,9 +161,8 @@ const CompanyPage = () => {
                 show={showPopup}
                 onClose={() => {
                     setShowPopup(false)
-                    setFormData({} as Empresa); // reset values to blank fields
-                    navigate(0);
-                }
+                    navigate(-1);
+                    }
                 }
             />
             <ToastContainer />

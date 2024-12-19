@@ -168,7 +168,7 @@ const VehiclePage = () => {
                 onClose={() => {
                     setShowPopup(false)
                     navigate(-1);
-                }
+                    }
                 }
             />
             <ToastContainer />

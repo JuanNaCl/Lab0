@@ -160,7 +160,15 @@ const FamilyPage = () => {
                     </form>
                 </div>
             </main>
-            <Popup message={popupMessage} show={showPopup} onClose={() => setShowPopup(false)} />
+            <Popup 
+            message={popupMessage} 
+            show={showPopup} 
+            onClose={() => {
+                setShowPopup(false)
+                navigate(-1);
+                }
+            }
+            />
             <ToastContainer />
         </div>
     );
