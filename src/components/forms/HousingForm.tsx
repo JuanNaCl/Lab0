@@ -34,7 +34,7 @@ export const HousingForm: React.FC<HousingFormProps> = ({
             console.error("No Personas found");
         } else {
             const formattedOptions = Persona!.map(persona => ({
-                value: persona.id!, label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+                value: persona.id!, label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`,
             })); setPersonaOptions(formattedOptions);
         }
     };

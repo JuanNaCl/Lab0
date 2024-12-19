@@ -43,7 +43,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
         } else {
             const formattedOptions = Persona!.map((persona) => ({
                 value: persona.id!,
-                label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`,
+                label: `(${persona.cedula}) ${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`,
             }));
             setPersonaOptions(formattedOptions);
         }

@@ -30,7 +30,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
             } else{
                 const formattedPeople = Persona!.map((persona) => ({
                     id: persona.id,
-                    nombre: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido}`.trim(),
+                    nombre: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`.trim(),
                 }));
                 setPeople(formattedPeople);
             }

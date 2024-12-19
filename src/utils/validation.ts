@@ -36,7 +36,7 @@ export const validateForm = (data: any, section: string) => {
                 errors.cedula = 'Cedula invalida';
             }
             else if (data.cedula && data.cedula.toString().length < 6) {
-                errors.cedula = 'La cedula tiene como minimo 6 digitos';
+                errors.cedula = 'La cedula tiene como mínimo 6 digitos';
             }
             else if (data.cedula && data.cedula.toString().length > 10) {
                 errors.cedula = 'La cedula tiene como maximo 10 digitos';
@@ -57,7 +57,7 @@ export const validateForm = (data: any, section: string) => {
             break;
 
         case 'vehicles':
-            const vehicleRequiredFields = {
+            { const vehicleRequiredFields = {
                 nombre: 'Nombre es requerido',
                 marca: 'Marca es requerida',
                 tipo: 'Tipo es requerido',
@@ -71,11 +71,28 @@ export const validateForm = (data: any, section: string) => {
                 }
             });
 
+            // Validación de placas
+            const placaRegexAuto = /^[A-Z]{3}\d{3}$/; // Autos: Tres letras y tres números
+            const placaRegexMoto = /^[A-Z]{3}\d{2}[A-Z]$/; // Motos: Tres letras, dos números y una letra
+
+            if (data.placa) {
+                const placa = data.placa.toUpperCase(); // Convertir a mayúsculas
+                console.log('Placa ingresada:', data.placa);
+                console.log('Validación Auto:', /^[A-Z]{3}\d{3}$/.test(data.placa));
+                console.log('Validación Moto:', /^[A-Z]{3}\d{2}[A-Z]$/.test(data.placa));
+
+                if (!placaRegexAuto.test(placa) && !placaRegexMoto.test(placa)) {
+                    errors.placa =
+                'La placa no es válida. Use "LLLNNN" para autos o "LLLNNL" para motos.';
+                }
+            }
+
             // Optional: Validate valor_nuevo if it exists
             if (data.valor_nuevo && (isNaN(data.valor_nuevo) || data.valor_nuevo < 0)) {
                 errors.valor_nuevo = 'Valor nuevo debe ser un número positivo';
             }
-            break;
+            break; 
+        }
 
         case 'company':
             const companyRequiredFields = {
@@ -269,6 +286,26 @@ export const validateForm = (data: any, section: string) => {
                 }
             }
             break;
+        case 'family': {
+                const familyRequiredFields = {
+                    nombre_familia: 'El nombre de la familia es requerido',
+                    id_persona: 'La persona asociada es requerida',
+                };
+            
+                // Validar campos requeridos
+                Object.entries(familyRequiredFields).forEach(([field, message]) => {
+                    if (!data[field]) {
+                        errors[field] = message;
+                    }
+                });
+            
+                // Validar longitud mínima para nombre de la familia
+                if (data.nombre_familia && data.nombre_familia.trim().length < 3) {
+                    errors.nombre_familia = 'El nombre de la familia debe tener al menos 3 caracteres';
+                }
+                break;
+            }
+            
             
         default:
             break;

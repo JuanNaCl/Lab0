@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
 
   return (
     <nav className={`bg-white ${isMenuOpen ? 'bg-opacity-100' : 'bg-opacity-20'} backdrop-blur-sm shadow-md p-4 sticky top-0 z-10`}>
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <div className="max-w-7xl mx-auto flex justify-center items-center">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="xl:hidden text-emerald-700 focus:outline-none"
