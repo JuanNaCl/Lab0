@@ -44,8 +44,6 @@ export const HousingForm: React.FC<HousingFormProps> = ({
         const { data: Municipio, error } = await supabase
         .from('Municipio')
         .select('*');
-        
-        console.log(Municipio)
         if (error) {
             console.error("Error fetching Municipios:", error);
         } else if (Municipio?.length === 0) {
@@ -60,21 +58,25 @@ export const HousingForm: React.FC<HousingFormProps> = ({
         }
         
     };
+
+    const tipoOptions = [
+        { value: 1, label: 'Casa' },
+        { value: 2, label: 'Apartamento' },
+        { value: 3, label: 'Apartaestudio' },
+    ];
     
     // #endregion
     useEffect(() => {
-        console.log('pre fetch',municipioOptions);
         if (activeSection === 'housing') {
             fetchMunicipios();
             fetchPersonas()
         }
-        
-        console.log('post fetch', municipioOptions);
     }, [activeSection]);
     
     if (activeSection !== 'housing') return null;
 
-    
+    const selectedTipoOption = tipoOptions.find((option) => option.value === Number(dataVivienda.tipo));
+
     return (
         <div className="space-y-4">
             <h2 className="text-2xl font-semibold mb-6">Información de Vivienda</h2>
@@ -83,7 +85,7 @@ export const HousingForm: React.FC<HousingFormProps> = ({
                     label="Propietario"
                     // type="text"
                     name="id_persona"
-                    value={dataPersonaVivienda.id_persona}
+                    value={personaOptions.find((option) => option.value === dataPersonaVivienda.id_persona || option.value === dataPersonaVivienda.id_persona?.value)}
                     options={personaOptions}
                     onChange={onChange}
                     error={errors.id_persona}
@@ -93,7 +95,8 @@ export const HousingForm: React.FC<HousingFormProps> = ({
                     label="Municipios"
                     // type="text"
                     name="id_municipio"
-                    value={dataVivienda.id_municipio}
+                    value={municipioOptions.find((option) =>
+                        option.value === dataVivienda.id_municipio || option.value === dataVivienda.id_municipio?.value)}
                     options={municipioOptions}
                     onChange={onChange}
                     error={errors.id_municipio}
@@ -175,8 +178,8 @@ export const HousingForm: React.FC<HousingFormProps> = ({
                     label="Tipo"
                     // type="text"
                     name="tipo"
-                    value={dataVivienda.tipo}
-                    options={[{ value: 1, label: 'Casa' }, { value: 2, label: 'Apartamento' }, { value: 3, label: 'Apartaestudio' }]}
+                    value={selectedTipoOption}
+                    options={tipoOptions}
                     onChange={onChange}
                     error={errors.tipo}
                     required

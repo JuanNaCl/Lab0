@@ -143,6 +143,7 @@ export const validateForm = (data: any, section: string) => {
             break;
 
         case 'housing':
+            console.log('Validating housing form:', data);
             const housingRequiredFields = {
                 id_persona: 'Propietario es requerido',
                 id_municipio: 'Municipio es requerido',

@@ -84,7 +84,9 @@ const HousingPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const validationErrors = validateForm(viviendaFormData, 'housing');
+        const combinedFormData = { ...viviendaFormData, ...personaViviendaFormData };
+
+        const validationErrors = validateForm(combinedFormData, 'housing');
         // AGREGAR VALIDATION ERROR PERSONA_VIVIENDA
 
         if (Object.keys(validationErrors).length > 0) {
@@ -104,7 +106,7 @@ const HousingPage = () => {
                 ({ data, error } = await supabase
                     .from('Vivienda')
                     .update({
-                        id_municipio: viviendaFormData.id_municipio.value,
+                        id_municipio: viviendaFormData.id_municipio?.value || viviendaFormData.id_municipio,
                         direccion: viviendaFormData.direccion,
                         barrio: viviendaFormData.barrio,
                         pisos: viviendaFormData.pisos,
@@ -113,7 +115,7 @@ const HousingPage = () => {
                         habitaciones: viviendaFormData.habitaciones,
                         baños: viviendaFormData.baños,
                         estrato: viviendaFormData.estrato,
-                        tipo: viviendaFormData.tipo.value,
+                        tipo: viviendaFormData.tipo?.value || viviendaFormData.tipo,
                     })
                     .eq('id', editId)
                     .select());
@@ -122,7 +124,7 @@ const HousingPage = () => {
                 const { data: personaViviendaData, error: personaViviendError } = await supabase 
                     .from('Persona_Vivienda')
                     .update({
-                        id_persona: parseInt(personaViviendaFormData.id_persona.value),
+                        id_persona: parseInt(personaViviendaFormData.id_persona?.value || personaViviendaFormData.id_persona),
                         id_vivienda: parseInt(editId),
                         es_dueño: true,
                     })
@@ -211,7 +213,7 @@ const HousingPage = () => {
 
     return (
         <div className="min-h-screen bg-emerald-50">
-            <Navbar activeSection="company" />
+            <Navbar activeSection="housing" />
             <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div className="bg-white rounded-lg shadow-lg p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
