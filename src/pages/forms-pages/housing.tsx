@@ -49,28 +49,28 @@ const HousingPage = () => {
                 setPersonaViviendaFormData(data);
             }
         };
-        
+
         if (editId) {
             fetchHousingById(editId);
             fetchDueñoVivienda(editId);
         }
     }, [editId]);
 
-    const viviendaFields = [ "id_municipio", "direccion", "barrio", "pisos", "area_construida",
-                             "area_total", "habitaciones", "baños", "estrato", "tipo",];
-    const personaViviendaFields = [ "id_persona", "id_vivienda","es_dueño", ];
+    const viviendaFields = ["id_municipio", "direccion", "barrio", "pisos", "area_construida",
+        "area_total", "habitaciones", "baños", "estrato", "tipo",];
+    const personaViviendaFields = ["id_persona", "id_vivienda", "es_dueño",];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         //console.log(name, value);
-        if (viviendaFields.includes(name)){
+        if (viviendaFields.includes(name)) {
             setViviendaFormData(prev => ({
                 ...prev,
                 [name]: value,
-            })); 
+            }));
         }
-        if (personaViviendaFields.includes(name)){
-        setPersonaViviendaFormData(prev => ({
+        if (personaViviendaFields.includes(name)) {
+            setPersonaViviendaFormData(prev => ({
                 ...prev,
                 [name]: value,
             }));
@@ -119,9 +119,9 @@ const HousingPage = () => {
                     })
                     .eq('id', editId)
                     .select());
-                    
+
                 console.log('Owner selected:', personaViviendaFormData.id_persona);
-                const { data: personaViviendaData, error: personaViviendError } = await supabase 
+                const { data: personaViviendaData, error: personaViviendError } = await supabase
                     .from('Persona_Vivienda')
                     .update({
                         id_persona: parseInt(personaViviendaFormData.id_persona?.value || personaViviendaFormData.id_persona),
@@ -130,13 +130,13 @@ const HousingPage = () => {
                     })
                     .eq('id_vivienda', editId)
                     .select();
-                    if (personaViviendError){
-                        console.log('Error actualizando la relación Persona_Vivienda: ',personaViviendError)
-                    }
-                    console.log("persona vivienda relacion: ",personaViviendaFormData.id_persona);
-                    console.log("id vivienda relacion: ",editId);
-                    console.log("objeto subido: ",personaViviendaData);
-                    
+                if (personaViviendError) {
+                    console.log('Error actualizando la relación Persona_Vivienda: ', personaViviendError)
+                }
+                console.log("persona vivienda relacion: ", personaViviendaFormData.id_persona);
+                console.log("id vivienda relacion: ", editId);
+                console.log("objeto subido: ", personaViviendaData);
+
             } else {
                 console.log('Submitting housing info:');
                 const { data: viviendaData, error: viviendaError } = await supabase
@@ -154,24 +154,24 @@ const HousingPage = () => {
                         tipo: viviendaFormData.tipo.value,
                     })
                     .select().single();
-                    if (viviendaError) {
-                        console.error('Error inserting housing data:', viviendaError);
-                        setPopupMessage('Error al guardar datos de la vivienda'); 
-                    }
-                    //console.log(personaViviendaFormData);
-                    //({ data, error } = await supabase
-                const { data: personaViviendaData, error: personaViviendError } = await supabase 
+                if (viviendaError) {
+                    console.error('Error inserting housing data:', viviendaError);
+                    setPopupMessage('Error al guardar datos de la vivienda');
+                }
+                //console.log(personaViviendaFormData);
+                //({ data, error } = await supabase
+                const { data: personaViviendaData, error: personaViviendError } = await supabase
                     .from('Persona_Vivienda')
                     .insert({
-                            id_persona: personaViviendaFormData.id_persona.value,
-                            id_vivienda: viviendaData.id,
-                            es_dueño: true,
-                        })      
-                        .select().single();
-                    if (personaViviendError){
-                        console.log('Error actualizando la relación Persona_Vivienda: ',personaViviendError)
-                    }
-                    console.log(personaViviendaData);
+                        id_persona: personaViviendaFormData.id_persona.value,
+                        id_vivienda: viviendaData.id,
+                        es_dueño: true,
+                    })
+                    .select().single();
+                if (personaViviendError) {
+                    console.log('Error actualizando la relación Persona_Vivienda: ', personaViviendError)
+                }
+                console.log(personaViviendaData);
             }
 
             if (error) {
@@ -243,8 +243,8 @@ const HousingPage = () => {
                 show={showPopup}
                 onClose={() => {
                     setShowPopup(false)
-                    navigate(0);
-                }
+                    navigate(-1);
+                    }
                 }
             />
             <ToastContainer />
