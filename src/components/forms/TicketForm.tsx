@@ -101,7 +101,7 @@ export const TicketForm: React.FC<TicketFormProps> = ({
                 <FormInput
                     label="Fecha"
                     name="fecha"
-                    type="date"
+                    type="datetime-local"
                     value={data.fecha}
                     onChange={onChange}
                     error={errors.fecha}
