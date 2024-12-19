@@ -77,7 +77,7 @@ const FamilyPage = () => {
                 .update({
                     nombre_familia: formData.nombre_familia,
                     id_persona: formData.id_persona.value,
-                    es_cdf: es_cdf,
+                    es_cdf: formData.es_cdf? formData.es_cdf : false,
                 })
                 .eq('id', editId)
                 .select());
@@ -86,8 +86,8 @@ const FamilyPage = () => {
                 .from('Familia')
                 .insert([{
                     nombre_familia: formData.nombre_familia,
-                    id_persona: formData.id_persona.value,
-                    es_cdf: formData.es_cdf,
+                    id_persona: formData.id_persona.value || formData.id_persona,
+                    es_cdf: formData.es_cdf? formData.es_cdf : false,
                 }])
                 .select());
             }

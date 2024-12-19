@@ -71,7 +71,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
                     type="checkbox"
                     id="es_cdf"
                     name="es_cdf"
-                    checked={data.es_cdf}
+                    checked={data.es_cdf ? data.es_cdf : false}
                     onChange={(e) => onChange({
                         target: { name: 'es_cdf', value: e.target.checked }
                     } as unknown as React.ChangeEvent<HTMLInputElement>)}
