@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   UserCircle2, Car, FileWarning, Home, 
-  MapPin, Briefcase, Building, ClipboardType, Menu, Heart
+  MapPin, Briefcase, Building, ClipboardType, Menu
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -43,12 +43,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     { id: 'departamento', label: 'Departamento', icon: <ClipboardType className="w-5 h-5" /> },
     { id: 'work', label: 'Trabajo', icon: <Briefcase className="w-5 h-5" /> },
     { id: 'company', label: 'Empresa', icon: <Building className="w-5 h-5" /> },
-    { id: 'family', label: 'Familia', icon: <Heart className="w-5 h-5" /> }
   ];
 
   return (
     <nav className={`bg-white ${isMenuOpen ? 'bg-opacity-100' : 'bg-opacity-20'} backdrop-blur-sm shadow-md p-4 sticky top-0 z-10`}>
-      <div className="max-w-7xl mx-auto flex justify-center items-center">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="xl:hidden text-emerald-700 focus:outline-none"
