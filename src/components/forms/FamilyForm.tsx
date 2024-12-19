@@ -15,9 +15,8 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
     data,
     errors,
     onChange,
-    activeSection,
-}) => {
-    const [people, setPeople] = useState<{ id: number; nombre: string }[]>([]);
+    }) => {
+        const [people, setPeople] = useState<{ value: number; label: string }[]>([]);
 
     useEffect(() => {
         const fetchPeople = async () => {
@@ -29,8 +28,8 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
                 console.error('Error fetching personas:', error);
             } else{
                 const formattedPeople = Persona!.map((persona) => ({
-                    id: persona.id,
-                    nombre: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`.trim(),
+                    value: persona.id,
+                    label: `${persona.primer_nombre} ${persona.segundo_nombre ?? ''} ${persona.primer_apellido} ${persona.segundo_apellido ?? ''}`.trim(),
                 }));
                 setPeople(formattedPeople);
             }
@@ -56,12 +55,9 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({
             <FormSelect
                 label="Persona"
                 name="id_persona"
-                value={data.id_persona}
+                value={people.find((option) => option.value === data.id_persona)}
                 onChange={onChange}
-                options={people.map((person) => ({
-                    value: person.id,
-                    label: person.nombre,
-                }))}
+                options={people}
                 error={errors.id_persona}
                 required
             />
