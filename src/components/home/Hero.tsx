@@ -11,6 +11,7 @@ export function Hero() {
                 <h2 className="text-xl text-gray-600 max-w-2xl mx-auto font-light animate-fade-in-delay">
                     Sistema para el registro y gestión de información sobre personas y viviendas
                 </h2>
+                <iframe src="https://charts-dot-glocation-dataviz.uc.r.appspot.com/?id=rzWkLjtytUZZDOMmOiHu" width="900" height="500"></iframe>
             </div>
         </header>
     );
